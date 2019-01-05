@@ -13,18 +13,33 @@
 
 class Validate
 {
+    /**
+     * validate  email method
+     */
     public function email($inp)
     {
         return filter_var($inp, FILTER_VALIDATE_EMAIL);
     }
 
+    /**
+     * validate string method
+     */
     public function string($inp)
     {
         return filter_var($inp, FILTER_SANITIZE_STRING);
     }
 
-    public function int($inp){}
-        
+    /**
+     * validate integer method
+     */
+    public function int($inp){
+
+        return filter_var($inp, FILTER_VALIDATE_INT);
+    }
+    
+    /**
+     * validate phone method 
+     */
     public function phone($inp)
     {
         return filter_var($inp, FILTER_VALIDATE_INT);

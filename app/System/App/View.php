@@ -15,15 +15,15 @@ class View
 {
     public function load($file, $data = [])
     {
-        $data = (object) $data;
-        $file = VIEWS . $file . '.php';
+        $data   = (object) $data;
+        $file   = VIEWS . $file . '.php';
 
         $header = VIEWS . 'tmp' . DS . 'header.php';
         $footer = VIEWS . 'tmp' . DS . 'footer.php';
 
-        if(!file_exists($file))   throw new \Exception('Error  view file $file not found');
-        if(!file_exists($header)) throw new \Exception('Error view file $header not found');
-        if(!file_exists($footer)) throw new \Exception('Error view file $footer not found');
+        if(!file_exists($file))   throw new \Exception("Error view file $file   not found ! ",  404);
+        if(!file_exists($header)) throw new \Exception("Error view file $header not found ! ", 404);
+        if(!file_exists($footer)) throw new \Exception("Error view file $footer not found ! ", 404);
 
         require_once ($header);
         require_once ($file);
