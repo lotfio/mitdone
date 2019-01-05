@@ -195,7 +195,7 @@ class Cli
      */
     public function listRoutes()
     {
-        $tbl = new \Console_Table();
+        $tbl = new Console;
 
         $tbl->setHeaders(['ID', 'METHOD', 'URI', 'PARAMETERS', 'FILTERS', 'ACTION']);
         $id = 1;

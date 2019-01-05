@@ -4,9 +4,7 @@ require 'autoload.php';
 
 
 // autoload routes;
-(function(){
-    require APP . 'routes/web.php';
-})();
+(function(){ require APP . 'routes/web.php';})();
 
 try{
     
