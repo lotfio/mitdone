@@ -12,5 +12,13 @@ try{
 
 }catch(\Exception $e)
 {
-    die($e->getMessage());
+    switch($e->getCode())
+    {
+        case 404: 
+            view("errors/404");
+        break;
+        case 500: 
+            view("errors/500");
+        break;
+    }
 }

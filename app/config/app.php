@@ -13,10 +13,9 @@
 
 define('DS', DIRECTORY_SEPARATOR);
 
-define('BASE_URI',  '/doctortech-lotfio/'); // to be removed
 define('PROTOCOL',  $_SERVER['REQUEST_SCHEME']);
 define('HOST',      $_SERVER['HTTP_HOST']);
-
+define('BASE_URI',  '/doctortech-lotfio/'); // to be removed
 define('URL', PROTOCOL ."://". HOST . "/");
 
 // base folder

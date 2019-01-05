@@ -33,7 +33,7 @@ class Autoload
 		$class = str_replace('MITDone', 'System', $class); // System = MITDone
 		$file  = APP . $class . '.php';
 
-		if(!file_exists($file)) throw new Exception("File $file not found ! ", 1);
+		if(!file_exists($file)) throw new Exception("File $file not found ! ", 404);
 
 		require_once $file;
 	}
