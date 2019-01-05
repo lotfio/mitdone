@@ -21,10 +21,13 @@ class View
         $header = VIEWS . 'tmp' . DS . 'header.php';
         $footer = VIEWS . 'tmp' . DS . 'footer.php';
 
-        if(!file_exists($file))throw new \Exception('Error view file not found');
+        if(!file_exists($file))   throw new \Exception('Error  view file $file not found');
+        if(!file_exists($header)) throw new \Exception('Error view file $header not found');
+        if(!file_exists($footer)) throw new \Exception('Error view file $footer not found');
 
-        require_once $header;
-        require $file;
-        require_once $footer;
+        require_once ($header);
+        require_once ($file);
+        require_once ($footer);
+        return;
     }
 }

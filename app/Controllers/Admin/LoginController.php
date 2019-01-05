@@ -38,7 +38,7 @@ class LoginController extends Controller
             dd($login);
         }
 
-        return $errors;
+        return view('admin/login', $errors);
 
     }
 }

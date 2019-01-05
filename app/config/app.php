@@ -29,8 +29,9 @@ define('CONTROLLERS', APP  . 'Controllers' . DS);
 define('MODELS',      APP  . 'Models'      . DS);
 define('SYS',         APP  . 'System'      . DS);
 define('HELPERS',     SYS  . 'helpers'     . DS);
-define('VIEWS',       APP  . 'resources'   . DS . 'views' . DS);
-define('CACHE',       APP  . 'storage'     . DS . 'cache' . DS);
+define('VIEWS',       APP  . 'resources'   . DS . 'views'     . DS);
+define('CACHE',       APP  . 'storage'     . DS . 'cache'     . DS);
+define('LANG',        APP  . 'storage'     . DS . 'languages' . DS);
 
 // PUBLIC FOLDERS for php
 define('PUB_FOLDER',    ROOT           . 'public' . DS);
@@ -50,3 +51,9 @@ define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'doctor_tech');
 define('DB_USER', 'root');
 define('DB_PASS', '');
+
+define('DB_OPTIONS', [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+    PDO::ATTR_EMULATE_PREPARES => false
+]);

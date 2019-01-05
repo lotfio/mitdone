@@ -3,18 +3,29 @@
 </section>
 <section class="login-content">
     <div class="logo">
-    <h1>Vali</h1>
+    <h1><?=tr(2)?></h1>
     </div>
     <div class="login-box">
-
     <form class="login-form" action="<?=BASE_URI?>admin/login" method="POST" enctype="application/x-www-form-urlencoded">
-        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>SIGN IN</h3>
+
+    <?php if(!empty($data)): ?>
+    <?php foreach($data as $err):?>
+        <div class="bs-component">
+            <div class="alert alert-dismissible alert-danger">
+            <button class="close" type="button" data-dismiss="alert">×</button><strong><?=tr(3)?></strong>
+            <?=$err?>
+            </div>
+        </div>
+    <?php endforeach?>
+    <?php endif?>
+
+        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i><?=tr(2)?></h3>
         <div class="form-group">
-        <label class="control-label">USERNAME</label>
+        <label class="control-label"><?=tr(6)?></label>
         <input class="form-control" type="text" name="phone" placeholder="Phone Number" autofocus>
         </div>
         <div class="form-group">
-        <label class="control-label">PASSWORD</label>
+        <label class="control-label"><?=tr(7)?></label>
         <input class="form-control" type="password" name="passwd" placeholder="Password">
         </div>
         <div class="form-group">

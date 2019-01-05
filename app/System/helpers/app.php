@@ -66,3 +66,16 @@ if(!function_exists('validate'))
       return new MITDone\Http\Validate;
     }
 }
+
+/**
+ * TODO to be updated based on the session language
+ */
+if(!function_exists('tr'))
+{
+    function tr($word)
+    {
+        $laguageFile = LANG . 'ar' . DS . 'app.txt';
+        $lang = file($laguageFile);
+        return $lang[$word - 1] ?? "Word Not Found";
+    }
+}

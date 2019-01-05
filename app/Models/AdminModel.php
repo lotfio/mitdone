@@ -14,11 +14,11 @@ use MITDone\App\Model;
 
 class AdminModel extends Model
 {
-    public function login($email, $passwd)
+    public function login($phone, $passwd)
     {
-        $sql  = "SELECT * FROM users WHERE phone = ? AND password = ?";
+        $sql  = "SELECT * FROM users WHERE phone = ? and password = ?";
         $stmt = $this->con->prepare($sql);
-        $stmt->execute([$email, SHA1($passwd)]);
+        $stmt->execute([$phone, SHA1($passwd)]);
         
         if($stmt->rowCount() == 1)
         {
@@ -26,5 +26,6 @@ class AdminModel extends Model
         }
 
         return 0;
+
     }
 }
