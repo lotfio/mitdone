@@ -16,29 +16,20 @@ use Models\AdminModel;
 
 class LoginController extends Controller
 {
+    /**
+     * show login form method
+    */
     public function showLoginForm()
     {
         return view('admin/login');
     }
 
+    /**
+     * proceed login form
+     */
     public function loginDo()
     {
-        $errors = [];
-
-       if(!validate()->string(post('phone'))) $errors[]  = "Wrong phone number";
-       if(!validate()->string(post('passwd'))) $errors[] = "Wrong password";
-       
-        $phone  = validate()->string(post('phone'));
-        $passwd = validate()->string(post('passwd'));
-
-
-        if(empty($errors))
-        {
-            $login  = (new AdminModel)->login($phone, $passwd);
-            dd($login);
-        }
-
-        return view('admin/login', $errors);
-
+        $login = new AdminModel;
+        return $login->login();       
     }
 }

@@ -14,18 +14,30 @@ use MITDone\App\Model;
 
 class AdminModel extends Model
 {
-    public function login($phone, $passwd)
+    public function login()
     {
-        $sql  = "SELECT * FROM users WHERE phone = ? and password = ?";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute([$phone, SHA1($passwd)]);
+        $errors = [];
+
+        if(!validate()->string(post('phone'))) $errors[]  = "Wrong phone number";
+        if(!validate()->string(post('passwd'))) $errors[] = "Wrong password";
         
-        if($stmt->rowCount() == 1)
+        $phone  = validate()->string(post('phone'));
+        $passwd = validate()->string(post('passwd'));
+
+ 
+        if(empty($errors))
         {
-            return 1;
+            $sql  = "SELECT * FROM users WHERE phone = ? and password = ?";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute([$phone, SHA1($passwd)]);
+            
+            if($stmt->rowCount() == 1)
+            {
+                return 1;
+            }
+            $errors[] = tr(10);
         }
 
-        return 0;
-
+        return view('admin/login', $errors);
     }
 }

@@ -7,3 +7,4 @@ Phone Number
 Password
 Stay Logged in
 Forgot Password
+Phone number or password are not correct
