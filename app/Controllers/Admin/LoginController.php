@@ -12,6 +12,7 @@
  */
 
 use MITDone\App\Controller;
+use Models\AdminModel;
 
 class LoginController extends Controller
 {
@@ -22,6 +23,22 @@ class LoginController extends Controller
 
     public function loginDo()
     {
-        dd($_POST);
+        $errors = [];
+
+       if(!validate()->string(post('phone'))) $errors[]  = "Wrong phone number";
+       if(!validate()->string(post('passwd'))) $errors[] = "Wrong password";
+       
+        $phone  = validate()->string(post('phone'));
+        $passwd = validate()->string(post('passwd'));
+
+
+        if(empty($errors))
+        {
+            $login  = (new AdminModel)->login($phone, $passwd);
+            dd($login);
+        }
+
+        return $errors;
+
     }
 }

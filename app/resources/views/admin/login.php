@@ -7,11 +7,11 @@
     </div>
     <div class="login-box">
 
-    <form class="login-form" action="<?=BASE_URI?>admin/login" method="POST">
+    <form class="login-form" action="<?=BASE_URI?>admin/login" method="POST" enctype="application/x-www-form-urlencoded">
         <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>SIGN IN</h3>
         <div class="form-group">
         <label class="control-label">USERNAME</label>
-        <input class="form-control" type="text" name="email" placeholder="Email" autofocus>
+        <input class="form-control" type="text" name="phone" placeholder="Phone Number" autofocus>
         </div>
         <div class="form-group">
         <label class="control-label">PASSWORD</label>

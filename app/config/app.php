@@ -45,3 +45,8 @@ define('ASSETS', URL      . BASE_URI   . 'assets' . "/");
 define('CSS',    ASSETS   . 'css'      . "/");
 define('JS',     ASSETS   . 'js'       . "/");
 define('img',    ASSETS   . 'img'      . "/");
+
+define('DB_HOST', '127.0.0.1');
+define('DB_NAME', 'doctor_tech');
+define('DB_USER', 'root');
+define('DB_PASS', '');

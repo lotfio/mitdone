@@ -18,8 +18,8 @@ if(!function_exists('dd'))
 }
 
 /**
- *  dump data and stop execution
- *  usful method for debugging
+ *  view loader function
+ *  load views
  */
 if(!function_exists('view'))
 {
@@ -28,5 +28,41 @@ if(!function_exists('view'))
       $view = new MITDone\App\View;
 
       return $view->load($file, $data);
+    }
+}
+
+/**
+ *  request function
+ *  
+ */
+if(!function_exists('request'))
+{
+    function request()
+    {
+      return new MITDone\Http\Request;
+    }
+}
+
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('post'))
+{
+    function post($input)
+    {
+      return request()->post($input);
+    }
+}
+
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('validate'))
+{
+    function validate()
+    {
+      return new MITDone\Http\Validate;
     }
 }

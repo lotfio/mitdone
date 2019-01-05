@@ -13,5 +13,9 @@
 
  class Request
  {
-     
+     public function post($input)
+     {
+         if(isset($_POST[$input])) return $_POST[$input];
+         return false;
+     }
  }
