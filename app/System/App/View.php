@@ -18,8 +18,13 @@ class View
         $data = (object) $data;
         $file = VIEWS . $file . '.php';
 
+        $header = VIEWS . 'tmp' . DS . 'header.php';
+        $footer = VIEWS . 'tmp' . DS . 'footer.php';
+
         if(!file_exists($file))throw new \Exception('Error view file not found');
 
+        require_once $header;
         require $file;
+        require_once $footer;
     }
 }

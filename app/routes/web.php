@@ -22,5 +22,4 @@ Router::config([
 Router::get('/', function(){return "hello world";});
 
 Router::get('/admin/login', "Admin\\LoginController@showLoginForm");
-
-Router::get('/admin/login', "Admin\\LoginController@showLoginForm");
+Router::post('/admin/login', "Admin\\LoginController@loginDo");

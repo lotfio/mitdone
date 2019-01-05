@@ -19,4 +19,9 @@ class LoginController extends Controller
     {
         return view('admin/login');
     }
+
+    public function loginDo()
+    {
+        dd($_POST);
+    }
 }
