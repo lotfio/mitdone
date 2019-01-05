@@ -9,6 +9,6 @@
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css" href="<?=CSS?>fontawesome-all.css">
     <link rel="stylesheet" type="text/css" href="<?=CSS?>style.css">
-    <title>Login - Vali Admin</title>
+    <title><?=tr(20)?></title>
   </head>
   <body>

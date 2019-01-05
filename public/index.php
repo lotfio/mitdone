@@ -1,5 +1,14 @@
 <?php
 
-require '../app/init.php';
+/**
+ * MITDone PHP MVC Framework 2018 
+ *
+ * @author      MITDone llc <dev@mitdone.com>
+ * @copyright   2018 MITDone llc
+ * @license     MIT
+ *
+ * @link        https://mitdone.com
+ *
+ */
 
-//new MITDone\App\Controller;
+require '../app/init.php';

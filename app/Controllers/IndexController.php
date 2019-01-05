@@ -18,6 +18,6 @@ class IndexController extends Controller
 {
     public function __construct()
     {
-        $model = new AdminModel();
+        //$model = new AdminModel();
     }
 }
