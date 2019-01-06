@@ -13,14 +13,12 @@
   </head>
   <body>
     
-    <!-- error page-->
-    <main class="app-content">
       <div class="page-error tile">
         <h1><i class="fa fa-exclamation-circle"></i> Error 404: Page not found</h1>
         <p>The page you have requested is not found.</p>
         <p><a class="btn btn-primary" href="javascript:window.history.back();">Go Back</a></p>
       </div>
-    </main>
+
 
     <!-- Essential javascripts for application to work-->
     <script src="<?=JS?>jquery-3.2.1.min.js"></script>
@@ -29,12 +27,5 @@
     <script src="<?=JS?>main.js"></script>
     <!-- The javascript plugin to display page loading on top-->
     <script src="<?=JS?>plugins/pace.min.js"></script>
-    <script type="text/javascript">
-        // Login Page Flipbox control
-        $('.login-content [data-toggle="flip"]').click(function() {
-        $('.login-box').toggleClass('flipped');
-        return false;
-        });
-    </script>
     </body>
 </html>
