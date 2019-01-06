@@ -52,7 +52,7 @@ class Validate
      */
     public function generateCSRF()
     {
-        return "<input type='hidden' name='".CSRF."' value='". Session::set(CSRF, SHA1(rand(0, 10000000))) ."'";
+        return "<input type='hidden' name='".CSRF."' value='". Session::set(CSRF, SHA1(rand(0, 10000000))) ."'>";
     }
 
     /**

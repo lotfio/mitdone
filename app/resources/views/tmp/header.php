@@ -7,7 +7,7 @@
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?=CSS?>main.css">
     <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="<?=CSS?>fontawesome-all.css">
+    <link rel="stylesheet" type="text/css" href="<?=CSS?>font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="<?=CSS?>style.css">
     <title><?=tr(20)?></title>
   </head>
