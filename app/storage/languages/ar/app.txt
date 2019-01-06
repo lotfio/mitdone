@@ -16,7 +16,8 @@ Wrong password
 CSRF error
 LOGIN PAGE
 HOME PAGE
-DOCTOR TECH
+دكتور تك
 DOCTOR TEC | 
 DEFAULT PAGE
-
+Dashboard
+Start a beautiful journey here

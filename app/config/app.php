@@ -60,4 +60,4 @@ define('DB_OPTIONS', [
 
 // security
 define('CSRF', "__CSRF");
-define('AUTH_SESSION_NAME', 'auth');
+define('AUTH_SESS_NAME', 'auth');

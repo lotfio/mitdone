@@ -16,12 +16,21 @@ use Models\AdminModel;
 
 class HomeController extends Controller
 {
+    
+    private $admin;
+
     /**
      * controller auth check
      */
     public function __construct()
     {
-        auth()->notLogged('admin/login');
+        auth()->notLogged('admin/login'); // check login 
+
+        /**
+         * if authenticated admin
+         */
+        $model = new AdminModel();
+        $this->admin = is_array($model->authUser()) ? $model->authUser()[0] : NULL;
     }
 
     /**
@@ -30,6 +39,7 @@ class HomeController extends Controller
     public function index()
     { 
         $data['title'] = tr(18);
+        $data['admin'] = $this->admin;
         return view('admin/index', $data);
     }
 }

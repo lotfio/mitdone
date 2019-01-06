@@ -38,7 +38,7 @@ class AdminModel extends Model
             if($find)
             {
                 $user = $find[0];
-                Session::set(AUTH_SESSION_NAME, $user->id);
+                Session::set(AUTH_SESS_NAME, $user->id);
                 Session::unset(CSRF);
                 Session::regenerate(); // prevent session fixation
                 return redirect("admin/home");
@@ -47,5 +47,17 @@ class AdminModel extends Model
         }
 
         return view('admin/login', $data);
+    }
+
+    /**
+     * Geth authennticated user data
+     *
+     * @return void
+     */
+    public function authUser()
+    {
+        return $this->select->allFrom('users', [
+            "id" => Session::get(AUTH_SESS_NAME)
+        ]);
     }
 }

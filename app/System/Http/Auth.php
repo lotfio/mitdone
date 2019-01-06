@@ -18,7 +18,7 @@ class Auth
      */
     public function Logged($action)
     {
-        if(Session::get(AUTH_SESSION_NAME))  return redirect($action); // if logged
+        if(Session::get(AUTH_SESS_NAME))  return redirect($action); // if logged
     }
 
     /**
@@ -26,7 +26,7 @@ class Auth
      */
     public function notLogged($action)
     {
-        if(!Session::get(AUTH_SESSION_NAME))  return redirect($action); // if logged
+        if(!Session::get(AUTH_SESS_NAME))  return redirect($action); // if logged
     }
 
 }

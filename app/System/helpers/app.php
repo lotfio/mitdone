@@ -76,7 +76,8 @@ if(!function_exists('tr'))
     {
         $laguageFile = LANG . 'ar' . DS . 'app.txt';
         $lang = file($laguageFile);
-        return rtrim($lang[$word - 1]) ?? "Word Not Found";
+        $word = $lang[$word - 1] ?? " Word Not Found";
+        return rtrim($word); // remove white spaces on the right side
     }
 }
 
@@ -106,9 +107,8 @@ if(!function_exists('auth'))
 
 if(!function_exists('singleView'))
 {
-    function singleView($file, $title = NULL)
+    function singleView($file, $data = NULL)
     {
-        $title = $title;
         $file   = VIEWS . $file . '.php';
         if(!file_exists($file)) throw new \Exception("Error view file $footer not found ! ", 404);
         require_once ($file);
