@@ -12,6 +12,8 @@ try{
 
 }catch(\Exception $e)
 {
+    if(env('APP_ENV') == 'DEV') dd($e);
+
     switch($e->getCode())
     {
         case 404: 

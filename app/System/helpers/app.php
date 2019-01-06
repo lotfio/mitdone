@@ -114,3 +114,35 @@ if(!function_exists('singleView'))
         require_once ($file);
     }
 }
+
+/**
+ * env function
+ * envirenment vars function
+ */
+if(!function_exists('env'))
+{
+    function env($val, $default = NULL)
+    {
+        $file   = ROOT . '.env';
+        if(!file_exists($file)) throw new \Exception(".env file $file not found ! ", 404);
+        
+        $file = array_filter(array_map('trim',file($file))); // read env file and remove white spaces
+
+        $file = array_filter($file, function($elem){ // remove no key values elements
+            return preg_match('#\:#', $elem);
+        });
+        $envVariable = [];   // expload file
+        $env         = [];   // set keys and values
+
+        foreach($file as $var)
+        {
+            $envVariable[] = explode(':', $var);
+            for($i = 0; $i < count($envVariable); $i++)
+            {
+                $env[trim($envVariable[$i][0])] = trim($envVariable[$i][1]);
+            }
+        }
+        return $env[$val] ?? $default;
+    }
+}
+
