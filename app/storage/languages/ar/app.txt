@@ -11,3 +11,11 @@ Sign In
 Email
 Reset
 Back to Login
+Wrong phone number
+Wrong password
+CSRF error
+LOGIN PAGE
+HOME PAGE
+
+DOCTOR TEC | 
+DEFAULT PAGE

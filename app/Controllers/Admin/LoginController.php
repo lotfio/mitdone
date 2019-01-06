@@ -29,7 +29,8 @@ class LoginController extends Controller
     */
     public function showLoginForm()
     { 
-        return view('admin/login');
+        $data["title"] = tr(17);
+        return view('admin/login',$data);
     }
 
     /**

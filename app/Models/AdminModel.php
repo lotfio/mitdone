@@ -18,16 +18,17 @@ class AdminModel extends Model
 {
     public function login()
     {
-        $errors = [];
+        $data['title']  = tr(17);
+        $data['errors'] = [];
 
-        if(!validate()->string(post('phone'))) $errors[]  = "Wrong phone number";
-        if(!validate()->string(post('passwd'))) $errors[] = "Wrong password";
-        if(!validate()->validateCSRF()) $errors[] = "error CSRF";
+        if(!validate()->string(post('phone')))   $data['errors'][] = tr(14);
+        if(!validate()->string(post('passwd')))  $data['errors'][] = tr(15);
+        if(!validate()->validateCSRF())          $data['errors'][] = tr(16);
         
         $phone  = validate()->string(post('phone'));
         $passwd = validate()->string(post('passwd'));
  
-        if(empty($errors))
+        if(empty($data['errors']))
         {
             $find = $this->select->allFrom('users', [
                 "phone"    => $phone,
@@ -42,9 +43,9 @@ class AdminModel extends Model
                 Session::regenerate(); // prevent session fixation
                 return redirect("admin/home");
             }
-            $errors[] = tr(10);
+            $data['errors'][] = tr(10);
         }
 
-        return view('admin/login', $errors);
+        return view('admin/login', $data);
     }
 }
