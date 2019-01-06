@@ -14,30 +14,19 @@
 use MITDone\App\Controller;
 use Models\AdminModel;
 
-class LoginController extends Controller
+class LogOutController extends Controller
 {
     /**
      * controller auth check
      */
     public function __construct()
     {
-        auth()->Logged('admin/home');
-    }
-    
-    /**
-     * show login form method
-    */
-    public function showLoginForm()
-    { 
-        return view('admin/login');
+        auth()->notLogged('admin/login');
     }
 
-    /**
-     * proceed login form
-     */
-    public function loginDo()
+    public function logOut()
     {
-        $login = new AdminModel;
-        return $login->login();     
+        session_destroy();
+        redirect('admin/login', 0);
     }
 }

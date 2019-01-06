@@ -16,8 +16,9 @@ use Models\AdminModel;
 
 class IndexController extends Controller
 {
-    public function __construct()
+    public function index()
     {
-        //$model = new AdminModel();
+       //echo validate()->generateCSRF();
+       echo __CLASS__;
     }
 }
