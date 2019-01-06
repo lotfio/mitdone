@@ -27,6 +27,8 @@
         <div class="form-group">
         <label class="control-label"><?=tr(7)?></label>
         <input class="form-control" type="password" name="passwd" placeholder="Password">
+        <?=validate()->generateCSRF()?>
+      
         </div>
         <div class="form-group">
         <div class="utility">

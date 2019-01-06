@@ -22,15 +22,16 @@ define('URL', PROTOCOL ."://". HOST . "/");
 define('ROOT', dirname(dirname(__DIR__)) . DS);
 
 // app folders
-define('APP',         ROOT . 'app'         . DS);
-define('CONFIG',      APP  . 'config'      . DS);
-define('CONTROLLERS', APP  . 'Controllers' . DS);
-define('MODELS',      APP  . 'Models'      . DS);
-define('SYS',         APP  . 'System'      . DS);
-define('HELPERS',     SYS  . 'helpers'     . DS);
-define('VIEWS',       APP  . 'resources'   . DS . 'views'     . DS);
-define('CACHE',       APP  . 'storage'     . DS . 'cache'     . DS);
-define('LANG',        APP  . 'storage'     . DS . 'languages' . DS);
+define('APP',         ROOT    . 'app'         . DS);
+define('CONFIG',      APP     . 'config'      . DS);
+define('CONTROLLERS', APP     . 'Controllers' . DS);
+define('MODELS',      APP     . 'Models'      . DS);
+define('SYS',         APP     . 'System'      . DS);
+define('HELPERS',     SYS     . 'helpers'     . DS);
+define('VIEWS',       APP     . 'resources'   . DS . 'views'     . DS);
+define('STORAGE',     APP     .  'storage'    . DS);
+define('CACHE',       STORAGE .  'cache'      . DS);
+define('LANG',        STORAGE .  'languages'  . DS);
 
 // PUBLIC FOLDERS for php
 define('PUB_FOLDER',    ROOT           . 'public' . DS);
@@ -56,3 +57,7 @@ define('DB_OPTIONS', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     PDO::ATTR_EMULATE_PREPARES => false
 ]);
+
+// security
+define('CSRF', "__CSRF");
+define('AUTH_SESSION_NAME', 'auth');

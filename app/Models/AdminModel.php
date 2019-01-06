@@ -11,6 +11,8 @@
  *
  */
 use MITDone\App\Model;
+use MITDone\Http\Session;
+use MITDone\Database\Select;
 
 class AdminModel extends Model
 {
@@ -20,20 +22,25 @@ class AdminModel extends Model
 
         if(!validate()->string(post('phone'))) $errors[]  = "Wrong phone number";
         if(!validate()->string(post('passwd'))) $errors[] = "Wrong password";
+        if(!validate()->validateCSRF()) $errors[] = "error CSRF";
         
         $phone  = validate()->string(post('phone'));
         $passwd = validate()->string(post('passwd'));
-
  
         if(empty($errors))
         {
-            $sql  = "SELECT * FROM users WHERE phone = ? and password = ?";
-            $stmt = $this->con->prepare($sql);
-            $stmt->execute([$phone, SHA1($passwd)]);
+            $find = $this->select->allFrom('users', [
+                "phone"    => $phone,
+                "password" => SHA1($passwd)
+            ]);
             
-            if($stmt->rowCount() == 1)
+            if($find)
             {
-                return 1;
+                $user = $find[0];
+                Session::set(AUTH_SESSION_NAME, $user->id);
+                Session::unset(CSRF);
+                Session::regenerate(); // prevent session fixation
+                return redirect("admin/home");
             }
             $errors[] = tr(10);
         }
