@@ -44,4 +44,28 @@ class Validate
     {
         return filter_var($inp, FILTER_VALIDATE_INT);
     }
+
+    /**
+     * generate csrf input
+     *
+     * @return void
+     */
+    public function generateCSRF()
+    {
+        return "<input type='hidden' name='".CSRF."' value='". Session::set(CSRF, SHA1(rand(0, 10000000))) ."'";
+    }
+
+    /**
+     * validate csrf
+     *
+     * @return void
+     */
+    public function validateCSRF()
+    {
+        if(Session::get(CSRF) && Session::get(CSRF) === post(CSRF))
+        {
+            return true;
+        }
+        return false;
+    }
 }

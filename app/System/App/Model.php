@@ -10,14 +10,13 @@
  * @link        https://mitdone.com
  *
  */
+use MITDone\Database\Select;
 use PDO;
 
 class Model
 {
-    protected $con;
-
     public function __construct()
     {
-        $this->con = new PDO("mysql:host=" . DB_HOST .";dbname=" . DB_NAME, DB_USER, DB_PASS, DB_OPTIONS);
+        $this->select = new Select;
     }
 }

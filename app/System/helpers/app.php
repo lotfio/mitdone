@@ -79,3 +79,27 @@ if(!function_exists('tr'))
         return $lang[$word - 1] ?? "Word Not Found";
     }
 }
+
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('redirect'))
+{
+    function redirect($to, $time = 2)
+    {
+      return MITDone\Http\Redirect::to($to, $time);
+    }
+}
+
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('auth'))
+{
+    function auth()
+    {
+      return new MITDone\Http\Auth;
+    }
+}
