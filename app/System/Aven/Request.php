@@ -50,7 +50,11 @@ class Request
         unset($uri[count($uri) - 1]);
 
         $uri = str_replace(implode('/', $uri), '', $_SERVER['REQUEST_URI']);
-        $uri = str_replace(BASE_URI, null, $uri);
+
+        if(BASE_URI !== '/')
+        {
+            $uri = str_replace(BASE_URI, NULL, $uri); // remove base uri if back slash only leav it for NGINX
+        }
         return trim($uri, '/');
     }
 

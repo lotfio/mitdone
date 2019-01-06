@@ -15,7 +15,9 @@ define('DS', DIRECTORY_SEPARATOR);
 
 define('PROTOCOL',  $_SERVER['REQUEST_SCHEME']);
 define('HOST',      $_SERVER['HTTP_HOST']);
-define('BASE_URI',  '/doctortech-lotfio/'); // to be removed
+define('BASE_URI',  '/'); // if no sub directories keep this empty do not add slash / NGINX
+//define('BASE_URI',  '/marchi/public/'); // APACHE
+
 define('URL', PROTOCOL ."://". HOST . "/");
 
 // base folder
