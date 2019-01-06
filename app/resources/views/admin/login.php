@@ -1,3 +1,5 @@
+<?= singleView('tmp/header', $data->title)?>
+
 <section class="material-half-bg">
     <div class="cover"></div>
 </section>
@@ -62,3 +64,5 @@
     </form>
     </div>
 </section>
+
+<?= singleView('tmp/footer')?>

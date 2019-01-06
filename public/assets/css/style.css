@@ -8,3 +8,6 @@ admin vli override
 .login-content .login-box{
     position: static;
 }
+.page-error{
+    min-height: calc(100vh);
+}

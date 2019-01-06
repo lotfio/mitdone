@@ -29,6 +29,7 @@ class HomeController extends Controller
     */
     public function index()
     { 
-        return view('admin/index');
+        $data['title'] = tr(18);
+        return view('admin/index', $data);
     }
 }

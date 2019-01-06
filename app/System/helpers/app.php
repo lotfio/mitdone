@@ -76,7 +76,7 @@ if(!function_exists('tr'))
     {
         $laguageFile = LANG . 'ar' . DS . 'app.txt';
         $lang = file($laguageFile);
-        return $lang[$word - 1] ?? "Word Not Found";
+        return rtrim($lang[$word - 1]) ?? "Word Not Found";
     }
 }
 
@@ -101,5 +101,16 @@ if(!function_exists('auth'))
     function auth()
     {
       return new MITDone\Http\Auth;
+    }
+}
+
+if(!function_exists('singleView'))
+{
+    function singleView($file, $title = NULL)
+    {
+        $title = $title;
+        $file   = VIEWS . $file . '.php';
+        if(!file_exists($file)) throw new \Exception("Error view file $footer not found ! ", 404);
+        require_once ($file);
     }
 }
