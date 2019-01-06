@@ -22,6 +22,7 @@ Router::config([
 Router::get('/', "indexController@index");
 
 // admin routes
+Router::get('/admin', "Admin\\LoginController@showLoginForm");
 Router::get('/admin/login', "Admin\\LoginController@showLoginForm");
 Router::post('/admin/login', "Admin\\LoginController@loginDo");
 
