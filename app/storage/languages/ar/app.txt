@@ -7,4 +7,7 @@ Phone Number
 Password
 Stay Logged in
 Forgot Password
-Phone number or password are not correct
+Sign In
+Email
+Reset
+Back to Login

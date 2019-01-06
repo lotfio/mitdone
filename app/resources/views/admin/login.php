@@ -34,28 +34,28 @@
         <div class="utility">
             <div class="animated-checkbox">
             <label>
-                <input type="checkbox"><span class="label-text">Stay Signed in</span>
+                <input type="checkbox"><span class="label-text"><?=tr(8)?></span>
             </label>
             </div>
-            <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Forgot Password ?</a></p>
+            <p class="semibold-text mb-2"><a href="#" data-toggle="flip"><?=tr(9)?></a></p>
         </div>
         </div>
         <div class="form-group btn-container">
-        <button class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>SIGN IN</button>
+        <button class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i><?=tr(10)?></button>
         </div>
     </form>
 
     <form class="forget-form" action="index.html">
-        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>Forgot Password ?</h3>
+        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i><?=tr(9)?></h3>
         <div class="form-group">
-        <label class="control-label">EMAIL</label>
+        <label class="control-label"><?=tr(11)?></label>
         <input class="form-control" type="text" placeholder="Email">
         </div>
         <div class="form-group btn-container">
-        <button class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i>RESET</button>
+        <button class="btn btn-primary btn-block"><i class="fa fa-unlock fa-lg fa-fw"></i><?=tr(12)?></button>
         </div>
         <div class="form-group mt-3">
-        <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> Back to Login</a></p>
+        <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i><?=tr(13)?></a></p>
         </div>
     </form>
     </div>
