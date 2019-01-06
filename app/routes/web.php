@@ -28,3 +28,5 @@ Router::post('/admin/login', "Admin\\LoginController@loginDo");
 
 Router::get('/admin/home', "Admin\\HomeController@index");
 Router::get('/admin/logout', "Admin\\LogOutController@logout");
+
+Router::get('/admin/profile', "Admin\\ProfileController@index");
