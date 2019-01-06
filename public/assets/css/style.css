@@ -1,0 +1,10 @@
+/**
+admin vli override
+**/
+.login-box .login-form{
+    position: static !important;
+    width: 400px;
+}
+.login-content .login-box{
+    position: static;
+}
