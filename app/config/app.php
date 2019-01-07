@@ -15,8 +15,8 @@ define('DS', DIRECTORY_SEPARATOR);
 
 define('PROTOCOL',  $_SERVER['REQUEST_SCHEME']);
 define('HOST',      $_SERVER['HTTP_HOST']);
-define('BASE_URI',  '/'); // if no sub directories keep this empty do not add slash / NGINX
-//define('BASE_URI',  '/marchi/public/'); // APACHE
+//define('BASE_URI',  '/'); // if no sub directories keep this empty do not add slash / NGINX
+define('BASE_URI',  '/doctortech-lotfio/'); // APACHE
 
 define('URL', PROTOCOL ."://". HOST . "/");
 
@@ -48,17 +48,6 @@ define('ASSETS', URL      . BASE_URI   . 'assets' . "/");
 define('CSS',    ASSETS   . 'css'      . "/");
 define('JS',     ASSETS   . 'js'       . "/");
 define('img',    ASSETS   . 'img'      . "/");
-
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'doctor_tech');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-
-define('DB_OPTIONS', [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-    PDO::ATTR_EMULATE_PREPARES => false
-]);
 
 // security
 define('CSRF', "__CSRF");

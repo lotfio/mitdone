@@ -23,9 +23,16 @@ use PDO;
 
     public function __construct()
     {
-        $this->con = new PDO("mysql:host=" . DB_HOST .";dbname=" . DB_NAME, DB_USER, DB_PASS, DB_OPTIONS);
+        $this->con = Connection::init();
     }
 
+    /**
+     * select from all function
+     *
+     * @param  string $tableName
+     * @param  string $where
+     * @return mixed
+     */
     public function allFrom($tableName, $where = NULL)
     {
 
