@@ -37,11 +37,16 @@ class UsersController extends Controller
 
     public function index()
     {
-        $data['title'] = tr(25);
-        $data['admin'] = $this->admin;
+        $data['title']    = tr(25);
+        $data['admin']    = $this->admin;
         $data['allUsers'] = $this->users->all();
 
         return view('admin/users', $data);
     }
+
+    /*public function edit($id = 0)
+    {
+        echo "editing user with an id " . $id;
+    }*/
 }
     

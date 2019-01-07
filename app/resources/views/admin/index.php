@@ -73,11 +73,51 @@
             </div>
           </div>
         </div>
-
-
-
       </div>
     <!-- end statistics -->
+
+    <div class="row">
+      <div class="col-md-12">
+        <h3 class="pager">Last month statistics :</h3>
+      </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+          <div class="tile">
+            <div class="tile-body">
+              <table class="table table-hover table-bordered" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th>number</th>
+                    <th>name</th>
+                    <th>username</th>
+                    <th>phone number</th>
+                    <th>Join Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+
+                
+                 <tr>
+                 <th>Action</th>
+                 <th>Action</th>
+                 <th>Action</th>
+                 <th>Action</th>
+                 <th>Action</th>
+                 <th>Action</th>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+
 
 </main>
 

@@ -32,3 +32,4 @@ Router::get('/admin/logout', "Admin\\LogOutController@logout");
 Router::get('/admin/profile', "Admin\\ProfileController@index");
 
 Router::get('/admin/users', "Admin\\UsersController@index");
+//Router::get('/admin/users/edit/{id}/{name}', "Admin\\UsersController@index")->filter(["id"=>"/[0-9]+/", "name" => "/[a-z]+/"]);

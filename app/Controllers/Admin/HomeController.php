@@ -34,7 +34,7 @@ class HomeController extends Controller
         $this->model   = new AdminModel();
         $this->user    = new UsersModel();
         $this->orders  = new OrdersModel();
-        $this->admin = is_array($this->model->authUser()) ? $this->model->authUser()[0] : NULL;
+        $this->admin   = is_array($this->model->authUser()) ? $this->model->authUser()[0] : NULL;
     }
 
     /**

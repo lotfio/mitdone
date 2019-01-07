@@ -66,3 +66,16 @@ a,p,h1,h2,h3,h4,h5,h6{
     font-family: "Noto Kufi Arabic", "Open Sans",
      "Helvetica Neue", Helvetica, Tahoma, Arial, sans-serif !important;
 }
+
+.btn > i{
+    position: relative;
+    left: 3px;
+    top: -2px;
+}
+
+.pager{
+    padding: 20px;
+    background: #FFF;
+    border-radius: 2px;
+    box-shadow: 0px 0px 2px #a9a6a6;
+}

@@ -27,7 +27,7 @@
                   <tr>
                     <th>number</th>
                     <th>name</th>
-                    <th>email</th>
+                    <th>username</th>
                     <th>phone number</th>
                     <th>Join Date</th>
                     <th>Action</th>
@@ -40,12 +40,13 @@
                  <tr>
                     <td><?=$user->id?></td>
                     <td><?=$user->name?></td>
-                    <td><?=$user->email?></td>
+                    <td><?=$user->username?></td>
                     <td><?=$user->phone?></td>
                     <td><?=$user->created_at?></td>
                     <td>
-                      <button class="btn btn-info btn-sm">Edit</button>
-                      <button class="btn btn-danger btn-sm">del</button>
+                      <button class="btn btn-success btn-sm"><i class="fa fa-eye fa-fw"></i></button>
+                      <button class="btn btn-info btn-sm"><i class="fa fa-edit fa-fw"></i></button>
+                      <button class="btn btn-danger btn-sm"><i class="fa fa-trash fa-fw"></i></button>
                     </td>
                   </tr>
 
