@@ -45,7 +45,6 @@ use PDO;
 
         foreach($where as $key => $value) {$arr[":".$key] = $value; } // adding place holder to keys
                 
-
         if(\count($arr) > 1) // if many conditions 
         {
             foreach($arr as $key => $value)
@@ -55,15 +54,12 @@ use PDO;
 
             $sql = \rtrim($sql, ' AND '); // if only one remove and
 
-
         }else{
             foreach($where as $key => $value)
             {
                 $sql .= $key ."=:". $key;
             }
         }  
-    
-    
     }
 
     $stmt = $this->con->prepare($sql);
@@ -76,5 +72,17 @@ use PDO;
 
     return false;
 
+    }
+
+    public function from($sel, $tbl, $where = NULL)
+    {
+        $sql = "SELECT $sel FROM $tbl  $where";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        if($stmt->rowCount() > 0)
+        {
+            return $stmt->fetchAll();
+        }
+        return [];
     }
  }

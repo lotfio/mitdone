@@ -12,7 +12,6 @@
  */
 use MITDone\App\Model;
 use MITDone\Http\Session;
-use MITDone\Database\Select;
 
 class AdminModel extends Model
 {
@@ -64,10 +63,5 @@ class AdminModel extends Model
         return $this->select->allFrom('users', [
             "id" => Session::get(AUTH_SESS_NAME)
         ]);
-    }
-
-    public function countAllUsers()
-    {
-        return count($this->select->allFrom('users'));
     }
 }

@@ -12,12 +12,13 @@
  */
 
 use MITDone\App\Controller;
-use Models\AdminModel;
+use Models\{UserModel,AdminModel, OrdersModel};
 
 class HomeController extends Controller
 {
     private $model;
     private $admin;
+    private $user;
 
 
     /**
@@ -30,7 +31,9 @@ class HomeController extends Controller
         /**
          * if authenticated admin
          */
-        $this->model = new AdminModel();
+        $this->model   = new AdminModel();
+        $this->user    = new UserModel();
+        $this->orders  = new OrdersModel();
         $this->admin = is_array($this->model->authUser()) ? $this->model->authUser()[0] : NULL;
     }
 
@@ -42,7 +45,12 @@ class HomeController extends Controller
         $data['title'] = tr(18);
         $data['admin'] = $this->admin;
 
-        $data['countAllUsers'] = $this->model->countAllUsers();
+        $data['countAllUsers']                     = $this->user->countAllUsers();
+        $data['countLastSevenDaysUsers']           = $this->user->countLastSevenDaysUsers();
+        $data['countOrdersRequests']               = $this->orders->counRequests();
+        $data['countLastSevenDaysOrdersRequests']  = $this->orders->countLastSevenDaysRequests();
+        $data['countEngineers']                    = $this->user->countEngineers();
+        $data['countLastSevenDaysEngineers']       = $this->user->countLastSevenDaysEngineers();
 
         return view('admin/index', $data);
     }
