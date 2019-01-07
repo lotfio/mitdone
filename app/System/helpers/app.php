@@ -74,7 +74,7 @@ if(!function_exists('tr'))
 {
     function tr($word)
     {
-        $lang = MITdone\Http\Session::get('lang');
+        $lang = $_SESSION['lang'] ?? NULL; // session class cannot be used since we cal this func before loader loads classes
 
         switch($lang)
         {
