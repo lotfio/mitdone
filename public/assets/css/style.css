@@ -32,6 +32,9 @@ admin vli override
 .page-error{
     min-height: calc(100vh);
 }
+.user .timeline-post .post-media img, .app-sidebar__user-avatar{
+    width: 50px;
+}
 a,p{
     font-family: "Noto Kufi Arabic", "Open Sans",
      "Helvetica Neue", Helvetica, Tahoma, Arial, sans-serif !important;

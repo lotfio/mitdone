@@ -40,7 +40,7 @@ define('PUB_FOLDER',    ROOT           . 'public' . DS);
 define('ASSETS_FOLDER', PUB_FOLDER     . 'assets' . DS);
 define('CSS_FOLDER',    ASSETS_FOLDER  . 'css'    . DS);
 define('JS_FOLDER',     ASSETS_FOLDER  . 'js'     . DS);
-define('img_FOLDER',    ASSETS_FOLDER  . 'img'    . DS);
+define('IMG_FOLDER',    ASSETS_FOLDER  . 'img'    . DS);
 
 // public folders http
 define('PUB',    URL      . 'public'   . "/");
@@ -48,6 +48,10 @@ define('ASSETS', URL      . BASE_URI   . 'assets' . "/");
 define('CSS',    ASSETS   . 'css'      . "/");
 define('JS',     ASSETS   . 'js'       . "/");
 define('img',    ASSETS   . 'img'      . "/");
+
+define('UPLOADS',  URL      . BASE_URI . 'uploads'. DS);
+define('UP_FILES', UPLOADS  . 'files' . DS);
+define('UP_IMG',   UPLOADS  . 'img'   . DS);
 
 // security
 define('CSRF', "__CSRF");

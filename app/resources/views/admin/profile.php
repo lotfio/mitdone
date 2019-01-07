@@ -1,15 +1,17 @@
 <?= singleView('tmp/header', $data)?>
 <?= singleView('tmp/top-nav', $data)?>
-<?= singleView('tmp/left-nav', $data)?>
+<?= singleView('tmp/left-nav', $data);
+$admin = $data->admin; // auth admin
+?>
 
 
 <main class="app-content">
       <div class="row user">
         <div class="col-md-12">
           <div class="profile">
-            <div class="info"><img class="user-img" src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg">
-              <h4>John Doe</h4>
-              <p>FrontEnd Developer</p>
+            <div class="info"><img class="user-img" src="<?=UP_IMG.$admin->image?>">
+              <h4><?=$admin->name?></h4>
+              <p><?=$admin->username?></p>
             </div>
             <div class="cover-image"></div>
           </div>
@@ -25,7 +27,8 @@
         <div class="col-md-9">
           <div class="tab-content">
             <div class="tab-pane active" id="user-timeline">
-              <div class="timeline-post">
+
+              <!-- <div class="timeline-post">
                 <div class="post-media"><a href="#"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg"></a>
                   <div class="content">
                     <h5><a href="#">John Doe</a></h5>
@@ -40,9 +43,10 @@
                   <li class="shares"><a href="#"><i class="fa fa-fw fa-lg fa-share"></i>Share</a></li>
                   <li class="comments"><i class="fa fa-fw fa-lg fa-comment-o"></i> 5 Comments</li>
                 </ul>
-              </div>
+              </div> -->
+
               <div class="timeline-post">
-                <div class="post-media"><a href="#"><img src="https://s3.amazonaws.com/uifaces/faces/twitter/jsa/48.jpg"></a>
+                <div class="post-media"><a href="#"><img src="<?=UP_IMG.$admin->image?>"></a>
                   <div class="content">
                     <h5><a href="#">John Doe</a></h5>
                     <p class="text-muted"><small>2 January at 9:30</small></p>
@@ -58,6 +62,7 @@
                 </ul>
               </div>
             </div>
+
             <div class="tab-pane fade" id="user-settings">
               <div class="tile user-settings">
                 <h4 class="line-head">Settings</h4>
@@ -65,31 +70,31 @@
                   <div class="row mb-4">
                     <div class="col-md-4">
                       <label>First Name</label>
-                      <input class="form-control" type="text">
+                      <input class="form-control" type="text" name="name" value="<?=$admin->name?>">
                     </div>
                     <div class="col-md-4">
                       <label>Last Name</label>
-                      <input class="form-control" type="text">
+                      <input class="form-control" type="text" name="u_name" value="<?=$admin->username?>">
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-8 mb-4">
                       <label>Email</label>
-                      <input class="form-control" type="text">
+                      <input class="form-control" type="text" name="email" value="<?=$admin->email?>">
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-md-8 mb-4">
                       <label>Mobile No</label>
-                      <input class="form-control" type="text">
+                      <input class="form-control" type="text" name="phone" value="<?=$admin->phone?>">
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-md-8 mb-4">
-                      <label>Office Phone</label>
-                      <input class="form-control" type="text">
+                      <label>Password</label>
+                      <input class="form-control" type="password">
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-md-8 mb-4">
-                      <label>Home Phone</label>
+                      <label>Confirm password</label>
                       <input class="form-control" type="text">
                     </div>
                   </div>

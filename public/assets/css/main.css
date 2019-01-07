@@ -13170,7 +13170,7 @@ be a descendant of the grid when it is being dragged.
 
 .app-sidebar__toggle {
   padding: 0 15px;
-  font-family: fontAwesome;
+  font-family: fontAwesome !important;
   color: #fff;
   line-height: 2.4;
   -webkit-transition: background-color 0.3s ease;
@@ -14701,7 +14701,7 @@ be a descendant of the grid when it is being dragged.
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
-  background-image: url(http://placeimg.com/1200/300/nature);
+  background-image: url(../img/bg.png);
   background-size: cover;
   background-position: center;
   min-height: 300px;

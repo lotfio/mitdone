@@ -16,6 +16,11 @@ use MITDone\Database\Select;
 
 class AdminModel extends Model
 {
+    /**
+     * Admin login method
+     *
+     * @return void
+     */
     public function login()
     {
         $data['title']  = tr(17);
