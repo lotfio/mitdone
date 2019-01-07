@@ -74,8 +74,19 @@ if(!function_exists('tr'))
 {
     function tr($word)
     {
-        $laguageFile = LANG . 'ar' . DS . 'app.txt';
+        $lang = MITdone\Http\Session::get('lang');
+
+        switch($lang)
+        {
+            case "ar" :  $laguageFile = LANG . $lang . DS . 'app.txt'; break;
+            case "en" :  $laguageFile = LANG . $lang . DS . 'app.txt'; break;
+            case "fr" :  $laguageFile = LANG . $lang . DS . 'app.txt'; break;
+            default   :  $laguageFile = LANG . DEF_LANG   . DS . 'app.txt'; break;
+        }
+        
+        if(!file_exists($laguageFile))  throw new Exception('Error Language File $laguageFile Not Found', 404);
         $lang = file($laguageFile);
+
         $word = $lang[$word - 1] ?? " Word Not Found";
         return rtrim($word); // remove white spaces on the right side
     }

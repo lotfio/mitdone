@@ -1,0 +1,29 @@
+0#
+Doctor tec
+Error
+Sign in
+Sign Up
+Phone Number
+Password
+Stay Logged in
+Forgot Password
+Sign In
+Email
+Reset
+Back to Login
+Wrong phone number
+Wrong password
+CSRF error
+LOGIN PAGE
+#
+HOME PAGE
+DOCTOR TEC | 
+DEFAULT PAGE
+Dashboard
+Start a beautiful journey here
+Users
+Users Last 7 days
+Requests
+Requests last 7 days
+Engineers
+Engineers from last 7 days

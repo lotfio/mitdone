@@ -1,23 +1,29 @@
-0#
-Doctor tec
-Error
-Sign in
-Sign Up
-Phone Number
-Password
-Stay Logged in
-Forgot Password
-Sign In
-Email
-Reset
-Back to Login
-Wrong phone number
-Wrong password
-CSRF error
-LOGIN PAGE
-HOME PAGE
-دكتور تك
-DOCTOR TEC | 
-DEFAULT PAGE
-Dashboard
-Start a beautiful journey here
+0 #
+طبيب تك
+خطأ
+تسجيل الدخول
+سجل
+رقم الهاتف
+كلمه السر
+ابق متصلا
+هل نسيت كلمة المرور
+تسجيل الدخول
+البريد الإلكتروني
+إعادة تعيين
+العودة إلى تسجيل الدخول
+رقم هاتف خاطئ
+كلمة مرور خاطئة
+خطأ CSRF
+تسجيل الدخول
+الصفحة الرئيسية
+#
+دكتور تك |
+صفحة اولية
+لوحة القيادة
+ابدأ رحلة جميلة هنا
+المستخدمون
+المستخدمون آخر 7 أيام
+الطلبات
+طلبات آخر 7 أيام
+المهندسين
+المهندسين من آخر 7 أيام

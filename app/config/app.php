@@ -12,6 +12,8 @@
  */
 
 define('DS', DIRECTORY_SEPARATOR);
+define('AVAIL_LANG', ["ar","en",'fr']);
+define('DEF_LANG', AVAIL_LANG[1]);
 
 define('PROTOCOL',  $_SERVER['REQUEST_SCHEME']);
 define('HOST',      $_SERVER['HTTP_HOST']);
