@@ -15,15 +15,22 @@ Wrong phone number
 Wrong password
 CSRF error
 LOGIN PAGE
-#
+DASHBOARD
 HOME PAGE
 DOCTOR TEC | 
 DEFAULT PAGE
 Dashboard
-Start a beautiful journey here
+Website Statistics and information
 Users
+Total Users
 Users Last 7 days
 Requests
+Total Requests
 Requests last 7 days
 Engineers
+Total number of Engineers
 Engineers from last 7 days
+Search
+Settings
+Profile
+Logout

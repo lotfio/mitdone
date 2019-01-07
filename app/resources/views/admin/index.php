@@ -29,18 +29,18 @@
         <div class="col-md-4">
           <div class="widget-small info coloured-icon"><i class="icon fa fa-plus-circle fa-3x"></i>
             <div class="info">
-              <h4><?=tr(26)?></h4>
-              <h6><?=tr(27)?></h6>
-              <p><b>25</b></p>
+              <h4><?=tr(27)?></h4>
+              <h6><?=tr(28)?></h6>
+              <p><b><?=$data->countOrdersRequests?></b></p>
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="widget-small warning coloured-icon"><i class="icon fa fa-graduation-cap fa-3x"></i>
+          <div class="widget-small warning coloured-icon"><i class="icon fa fa-cogs fa-3x"></i>
             <div class="info">
-              <h4><?=tr(28)?></h4>
-              <h6><?=tr(29)?></h6>
-              <p><b>10</b></p>
+              <h4><?=tr(30)?></h4>
+              <h6><?=tr(31)?></h6>
+              <p><b><?=$data->countEngineers?></b></p>
             </div>
           </div>
         </div>
@@ -49,8 +49,8 @@
           <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
             <div class="info">
               <h4><?=tr(24)?></h4>
-              <h6><?=tr(25)?></h6>
-              <p><b>500</b></p>
+              <h6><?=tr(26)?></h6>
+              <p><b><?=$data->countLastSevenDaysUsers?></b></p>
             </div>
           </div>
         </div>
@@ -58,18 +58,18 @@
         <div class="col-md-4">
           <div class="widget-small info coloured-icon"><i class="icon fa fa-plus-circle fa-3x"></i>
             <div class="info">
-              <h4><?=tr(26)?></h4>
-              <h6><?=tr(27)?></h6>
-              <p><b>500</b></p>
+              <h4><?=tr(27)?></h4>
+              <h6><?=tr(29)?></h6>
+              <p><b><?=$data->countLastSevenDaysOrdersRequests?></b></p>
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="widget-small warning coloured-icon"><i class="icon fa fa-graduation-cap fa-3x"></i>
+          <div class="widget-small warning coloured-icon"><i class="icon fa fa-cogs fa-3x"></i>
             <div class="info">
-              <h4><?=tr(28)?></h4>
-              <h6><?=tr(29)?></h6>
-              <p><b>500</b></p>
+              <h4><?=tr(30)?></h4>
+              <h6><?=tr(32)?></h6>
+              <p><b><?=$data->countLastSevenDaysEngineers?></b></p>
             </div>
           </div>
         </div>
