@@ -35,7 +35,34 @@ admin vli override
 .user .timeline-post .post-media img, .app-sidebar__user-avatar{
     width: 50px;
 }
-a,p{
+.widget-small{
+    flex-flow: row-reverse;
+}
+.widget-small.warning.coloured-icon .icon{
+    background: #fff;
+    color: #e8302d;
+}
+.widget-small.primary.coloured-icon .icon{
+    background: #fff;
+    color: #009688;
+}
+.widget-small.info.coloured-icon .icon{
+    background: #fff;
+    color: #f0932b;
+}
+.widget-small .info{
+    padding: 10px;
+}
+.widget-small .info h4{
+    font-weight: bold;
+}
+.widget-small .info h6{
+    font-weight: normal;
+}
+.info {
+    text-align: right;
+}
+a,p,h1,h2,h3,h4,h5,h6{
     font-family: "Noto Kufi Arabic", "Open Sans",
      "Helvetica Neue", Helvetica, Tahoma, Arial, sans-serif !important;
 }

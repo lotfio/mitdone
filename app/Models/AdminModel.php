@@ -65,4 +65,9 @@ class AdminModel extends Model
             "id" => Session::get(AUTH_SESS_NAME)
         ]);
     }
+
+    public function countAllUsers()
+    {
+        return count($this->select->allFrom('users'));
+    }
 }

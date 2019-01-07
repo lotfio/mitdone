@@ -16,8 +16,9 @@ use Models\AdminModel;
 
 class HomeController extends Controller
 {
-    
+    private $model;
     private $admin;
+
 
     /**
      * controller auth check
@@ -29,8 +30,8 @@ class HomeController extends Controller
         /**
          * if authenticated admin
          */
-        $model = new AdminModel();
-        $this->admin = is_array($model->authUser()) ? $model->authUser()[0] : NULL;
+        $this->model = new AdminModel();
+        $this->admin = is_array($this->model->authUser()) ? $this->model->authUser()[0] : NULL;
     }
 
     /**
@@ -40,6 +41,9 @@ class HomeController extends Controller
     { 
         $data['title'] = tr(18);
         $data['admin'] = $this->admin;
+
+        $data['countAllUsers'] = $this->model->countAllUsers();
+
         return view('admin/index', $data);
     }
 }
