@@ -126,6 +126,17 @@ if(!function_exists('singleView'))
     }
 }
 
+if(!function_exists('activeTab'))
+{
+    function activeTab($menuItem)
+    {
+        $uri = trim(str_replace(BASE_URI, NULL, $_SERVER['REQUEST_URI']));
+        $tab = explode('/', $uri)[1]; // action always;
+        return $tab == $menuItem ? 'active' : NULL;
+    }
+}
+
+
 /**
  * env function
  * envirenment vars function

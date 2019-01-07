@@ -30,3 +30,5 @@ Router::get('/admin/home', "Admin\\HomeController@index");
 Router::get('/admin/logout', "Admin\\LogOutController@logout");
 
 Router::get('/admin/profile', "Admin\\ProfileController@index");
+
+Router::get('/admin/users', "Admin\\UsersController@index");

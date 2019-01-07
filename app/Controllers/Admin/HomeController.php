@@ -12,7 +12,7 @@
  */
 
 use MITDone\App\Controller;
-use Models\{UserModel,AdminModel, OrdersModel};
+use Models\{UsersModel,AdminModel, OrdersModel};
 
 class HomeController extends Controller
 {
@@ -32,7 +32,7 @@ class HomeController extends Controller
          * if authenticated admin
          */
         $this->model   = new AdminModel();
-        $this->user    = new UserModel();
+        $this->user    = new UsersModel();
         $this->orders  = new OrdersModel();
         $this->admin = is_array($this->model->authUser()) ? $this->model->authUser()[0] : NULL;
     }

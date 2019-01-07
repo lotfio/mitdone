@@ -12,9 +12,13 @@
  */
 use MITDone\App\Model;
 
-class UserModel extends Model
+class UsersModel extends Model
 {
 
+    public function all()
+    {
+        return $this->select->allFrom('users');
+    }
     /**
      * get all users
      *

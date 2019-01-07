@@ -34,3 +34,4 @@ Search
 Settings
 Profile
 Logout
+Information about users
