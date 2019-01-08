@@ -12,7 +12,6 @@
  */
 
 use MITDone\App\Controller;
-use Models\AdminModel;
 
 class LogOutController extends Controller
 {

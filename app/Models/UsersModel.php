@@ -16,9 +16,10 @@ class UsersModel extends Model
 {
 
     public function all()
-    {
-        return $this->select->allFrom('users');
+    {   
+        return $this->select->from('users', '*');
     }
+
     /**
      * get all users
      *
@@ -26,31 +27,26 @@ class UsersModel extends Model
      */
     public function countAllUsers()
     {
-        return count($this->select->allFrom('users'));
+        return $this->select->countRows('users');
     }
 
     /**
      * new users
-     *
-     * @return void
+     * 
      */
     public function countLastSevenDaysUsers()
     {
-        return count(($this->select->from('*','users', 'WHERE created_at >= NOW() + INTERVAL -7 DAY AND 
-        created_at <  NOW() + INTERVAL  0 DAY'
-        )));
+        return $this->select->countLast7daysRows('users');
     }
 
     public function countEngineers()
     {
-        return count($this->select->allFrom('users', ["type"=>"engineer"]));
+       return $this->select->countRows('users', "WHERE type = 'engineer'");
     }
 
     public function countLastSevenDaysEngineers()
     {
-        return count(($this->select->from('*','users', 'WHERE type="engineer" AND created_at >= NOW() + INTERVAL -7 DAY AND 
-        created_at <  NOW() + INTERVAL  0 DAY'
-        )));
+        return $this->select->countLast7daysRows('users', "AND type = 'engineer'");
     }
 
 }

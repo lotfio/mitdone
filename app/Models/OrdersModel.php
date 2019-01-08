@@ -22,7 +22,7 @@ class OrdersModel extends Model
      */
     public function counRequests()
     {
-        return count($this->select->from('*', 'ordersrequests'));
+        return $this->select->countRows('ordersrequests');
     }
 
     /**
@@ -32,7 +32,6 @@ class OrdersModel extends Model
      */
     public function  countLastSevenDaysRequests()
     {
-        return count($this->select->from('*', 'ordersrequests', 'WHERE created_at >= NOW() + INTERVAL -7 DAY AND 
-        created_at <  NOW() + INTERVAL  0 DAY'));
+        return $this->select->countLast7daysRows('ordersrequests');
     }
 }

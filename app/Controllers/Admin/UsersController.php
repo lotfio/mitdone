@@ -12,11 +12,10 @@
  */
 
 use MITDone\App\Controller;
-use Models\{UsersModel,AdminModel};
+use Models\{UsersModel};
 
 class UsersController extends Controller
 {
-    private $admin;
     private $users;
 
     /**
@@ -26,11 +25,6 @@ class UsersController extends Controller
     {
         auth()->notLogged('admin/login'); // check login 
 
-        /**
-         * if authenticated admin
-         */
-        $model = new AdminModel;
-        $this->admin = is_array($model->authUser()) ? $model->authUser()[0] : NULL;
         $this->users  = new UsersModel;
     }
 
@@ -38,15 +32,21 @@ class UsersController extends Controller
     public function index()
     {
         $data['title']    = tr(25);
-        $data['admin']    = $this->admin;
         $data['allUsers'] = $this->users->all();
 
         return view('admin/users', $data);
     }
 
-    /*public function edit($id = 0)
+    /**
+     * show users method
+     *
+     * @param integer $id
+     * @return void
+     */
+    public function show($id = 0)
     {
-        echo "editing user with an id " . $id;
-    }*/
+        
+        return view('admin/users.show');
+    }
 }
     

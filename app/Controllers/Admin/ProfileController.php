@@ -12,12 +12,9 @@
  */
 
 use MITDone\App\Controller;
-use Models\AdminModel;
 
 class ProfileController extends Controller
 {
-    
-    private $admin;
 
     /**
      * controller auth check
@@ -25,12 +22,6 @@ class ProfileController extends Controller
     public function __construct()
     {
         auth()->notLogged('admin/login'); // check login 
-
-        /**
-         * if authenticated admin
-         */
-        $model = new AdminModel();
-        $this->admin = is_array($model->authUser()) ? $model->authUser()[0] : NULL;
     }
 
     /**
@@ -39,7 +30,6 @@ class ProfileController extends Controller
     public function index()
     { 
         $data['title'] = tr(18);
-        $data['admin'] = $this->admin;
         return view('admin/profile', $data);
     }
 }

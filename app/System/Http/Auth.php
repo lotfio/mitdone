@@ -10,6 +10,7 @@
  * @link        https://mitdone.com
  *
  */
+use Models\AdminModel;
 
 class Auth
 {
@@ -29,4 +30,14 @@ class Auth
         if(!Session::get(AUTH_SESS_NAME))  return redirect($action); // if logged
     }
 
+    /**
+     * get authenticated user
+     *
+     * @return void
+     */
+    public function user()
+    {
+        $admin = new AdminModel;
+        return $admin->authUser()[0];
+    }
 }

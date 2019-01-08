@@ -34,9 +34,9 @@ class AdminModel extends Model
  
         if(empty($data['errors']))
         {
-            $find = $this->select->allFrom('users', [
-                "phone"    => $phone,
-                "password" => SHA1($passwd)
+            $find = $this->select->from('users','*', [
+                "phone    | = " => $phone . '| and',
+                "password | = " => SHA1($passwd)
             ]);
             
             if($find)
@@ -60,8 +60,11 @@ class AdminModel extends Model
      */
     public function authUser()
     {
-        return $this->select->allFrom('users', [
-            "id" => Session::get(AUTH_SESS_NAME)
+        $auth = $this->select->from('users','*',[
+            "id | = " => Session::get(AUTH_SESS_NAME)
         ]);
+
+        unset($auth[0]->password); // unset pass
+        return $auth;
     }
 }

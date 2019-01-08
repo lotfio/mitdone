@@ -36,6 +36,8 @@
                 <tbody>
 
 
+                 <?php if(is_array($data->allUsers)):?>
+
                  <?php foreach($data->allUsers as $user):?>
                  <tr>
                     <td><?=$user->id?></td>
@@ -44,22 +46,26 @@
                     <td><?=$user->phone?></td>
                     <td><?=$user->created_at?></td>
                     <td>
-                      <button class="btn btn-success btn-sm"><i class="fa fa-eye fa-fw"></i></button>
-                      <button class="btn btn-info btn-sm"><i class="fa fa-edit fa-fw"></i></button>
-                      <button class="btn btn-danger btn-sm"><i class="fa fa-trash fa-fw"></i></button>
+                      <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-success btn-sm"><i class="fa fa-eye fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm"><i class="fa fa-edit fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/delete/<?=e($user->id)?>" class="btn btn-danger btn-sm"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
-
                  <?php endforeach?>
+                 <?php else:?>
+                    <div class="bs-component">
+                      <div class="alert alert-dismissible alert-danger">
+                          <button class="close" type="button" data-dismiss="alert">×</button>
+                          <strong>Oh snap!</strong>No Users Where Found ! 
+                      </div>
+                    </div>
+                <?php endif?>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
     </div>
-
-
-
 
     
 </main>
@@ -71,14 +77,14 @@
 <script type="text/javascript" src="<?=JS?>plugins/dataTables.bootstrap.min.js"></script>
 
 <script type="text/javascript">$('#sampleTable').DataTable();</script>
-    <!-- Google analytics script-->
-    <script type="text/javascript">
-      if(document.location.hostname == 'pratikborsadiya.in') {
-      	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      	ga('create', 'UA-72504830-1', 'auto');
-      	ga('send', 'pageview');
-      }
-    </script>
+<!-- Google analytics script-->
+<script type="text/javascript">
+  if(document.location.hostname == 'pratikborsadiya.in') {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-72504830-1', 'auto');
+    ga('send', 'pageview');
+  }
+</script>

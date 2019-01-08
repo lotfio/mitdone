@@ -1,4 +1,3 @@
-
 <?= singleView('tmp/header', $data)?>
 <?= singleView('tmp/top-nav', $data)?>
 <?= singleView('tmp/left-nav', $data)?>
