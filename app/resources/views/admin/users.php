@@ -48,7 +48,7 @@
                     <td>
                       <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-success btn-sm"><i class="fa fa-eye fa-fw"></i></a>
                       <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm"><i class="fa fa-edit fa-fw"></i></a>
-                      <a href="<?=BASE_URI?>admin/users/delete/<?=e($user->id)?>" class="btn btn-danger btn-sm"><i class="fa fa-trash fa-fw"></i></a>
+                      <a data-id="<?=e($user->id)?>" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                  <?php endforeach?>
@@ -70,11 +70,11 @@
     
 </main>
 
-
 <?= singleView('tmp/footer', $data);?>
 
 <script type="text/javascript" src="<?=JS?>plugins/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?=JS?>plugins/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="<?=JS?>plugins/sweetalert.min.js"></script>
 
 <script type="text/javascript">$('#sampleTable').DataTable();</script>
 <!-- Google analytics script-->
@@ -88,3 +88,4 @@
     ga('send', 'pageview');
   }
 </script>
+

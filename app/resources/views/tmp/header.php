@@ -10,5 +10,8 @@
     <link rel="stylesheet" type="text/css" href="<?=CSS?>font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="<?=CSS?>style.css">
     <title><?=tr(20)?> <?=isset($data->title) ? $data->title : tr(21) ?></title>
+    <script type="text/javascript">
+      var base_uri = '<?=BASE_URI?>';
+    </script>
   </head>
   <body>

@@ -11,6 +11,7 @@
  *
  */
 use MITDone\Database\Select;
+use MITDone\Database\Update;
 use PDO;
 
 class Model
@@ -18,5 +19,6 @@ class Model
     public function __construct()
     {
         $this->select = new Select;
+        $this->update = new Update;
     }
 }

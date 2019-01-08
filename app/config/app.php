@@ -45,11 +45,11 @@ define('JS_FOLDER',     ASSETS_FOLDER  . 'js'     . DS);
 define('IMG_FOLDER',    ASSETS_FOLDER  . 'img'    . DS);
 
 // public folders http
-define('PUB',    URL      . 'public'   . "/");
-define('ASSETS', URL      . BASE_URI   . 'assets' . "/");
-define('CSS',    ASSETS   . 'css'      . "/");
-define('JS',     ASSETS   . 'js'       . "/");
-define('img',    ASSETS   . 'img'      . "/");
+define('PUB',    URL      . 'public'   . DS);
+define('ASSETS', URL      . BASE_URI   . 'assets' . DS);
+define('CSS',    ASSETS   . 'css'      . DS);
+define('JS',     ASSETS   . 'js'       . DS);
+define('img',    ASSETS   . 'img'      . DS);
 
 define('UPLOADS',  URL      . BASE_URI . 'uploads'. DS);
 define('UP_FILES', UPLOADS  . 'files' . DS);

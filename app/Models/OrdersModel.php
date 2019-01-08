@@ -16,7 +16,7 @@ class OrdersModel extends Model
 {
 
     /**
-     * get all orders requests
+     * count orders requests
      *
      * @return void
      */
@@ -26,7 +26,7 @@ class OrdersModel extends Model
     }
 
     /**
-     * get last orders requests
+     * count last orders requests
      *
      * @return void
      */

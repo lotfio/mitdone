@@ -71,6 +71,7 @@ a,p,h1,h2,h3,h4,h5,h6{
     position: relative;
     left: 3px;
     top: -2px;
+    color:#fff;;
 }
 
 .pager{
@@ -78,4 +79,32 @@ a,p,h1,h2,h3,h4,h5,h6{
     background: #FFF;
     border-radius: 2px;
     box-shadow: 0px 0px 2px #a9a6a6;
+}
+
+.tile .tile-title-w-btn{
+    flex-flow: row-reverse;
+    margin-bottom: 0;
+}
+.post-media a >  img{
+    width: 130px;
+    background: #eee;
+    padding: 10px;
+    border-radius: 50%;
+}
+.timeline-post{
+    position: relative;
+}
+.timeline-post .content{
+    margin-top: 20px;
+}
+.img-modify{
+    position: absolute;
+    cursor: pointer;
+    padding: 9px 10px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    left: 100px;
+}
+.img-modify > i {
+    color: #fff;
 }

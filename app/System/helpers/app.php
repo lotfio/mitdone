@@ -178,3 +178,14 @@ if(!function_exists('e'))
        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
     }
 }
+/**
+ * set user image
+ */
+if(!function_exists('image'))
+{
+    function image($userImage, $defaultImage = "default-avatar.jpg")
+    {
+        if($userImage == '' || (!file_exists(UP_IMG . $userImage))) return UP_IMG . $defaultImage;
+        return UP_IMG . $userImage;
+    }
+}
