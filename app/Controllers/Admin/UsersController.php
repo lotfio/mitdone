@@ -80,7 +80,5 @@ class UsersController extends Controller
         $data['user']  = $this->users->getById($id)[0];
         return view('admin/users.edit', $data);
     }
-
-
 }
     
