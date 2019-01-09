@@ -11,6 +11,7 @@
  *
  */
 use MITDone\App\Model;
+use MITDone\Http\FileUpload;
 
 class UsersModel extends Model
 {
@@ -94,5 +95,85 @@ class UsersModel extends Model
         }
 
         return 0;
+    }
+
+    public function editUser($id = 0)
+    {
+        $user = $this->getById($id)[0];
+
+        if($user):
+
+            if(post("update"))
+            {
+                $data = [];
+                
+                if(!validate()->string(post('name')))        $data['errors'][] = "wrong name";
+                if(!validate()->string(post('username')))    $data['errors'][] = "wrong username";
+                if(!validate()->string(post('phone')))       $data['errors'][] = "wrong phone";
+                if(!empty(post('adress')))
+                {
+                    if(!validate()->string(post('address')))     $data['errors'][] = "wrong address";
+                }
+                if(!validate()->int(post('role')))           $data['errors'][] = "wrong role";
+                
+
+                $name     = validate()->string(post('name'));
+                $username = validate()->string(post('username'));
+                $phone    = validate()->string(post('phone'));
+                $adress   = validate()->string(post('address'));
+                $role     = validate()->string(post('role'));
+
+                if(empty($data['errors']))
+                {
+                    if(empty($_FILES['image']['name'])) // no image update
+                    {
+                        $update = $this->update->set('users',[ 
+                            "name"=> $name,
+                            "username"=> $username,
+                            "phone"=> $phone,
+                            "Address"=> $adress,
+                            "role_id"=> $role
+                        ], ["id | = "=> $id]);
+
+                        return $update;
+                    }else{
+
+                        $up = upload();
+                        $up->setUploadFile('image')->validate();
+        
+                        if(empty($up->errors()))
+                        {
+                            $image = $up->name .'.'.$up->ext;
+            
+                            $this->update->set('users',[ 
+                                "name"=> $name,
+                                "username"=> $username,
+                                "phone"=> $phone,
+                                "Address"=> $adress,
+                                "role_id"=> $role,
+                                "image"  => $image    
+                
+                            ], ["id | = "=> $id]);
+            
+                            $up->uploadFile(PHP_UP_IMG); // upload image
+
+                            $up->delete(PHP_UP_IMG . $user->image); // delete old image
+            
+                            $resizer = imageResizer(PHP_UP_IMG . $image); // resize image
+                            $resizer->resizeToBestFit(300, 300);
+                            $resizer->save(PHP_UP_IMG . $image);
+
+                            return 1;
+                        }
+
+                        return $up->errors();
+                    }
+
+                    return $data['errors'];
+
+                }  
+            }
+        endif;
+
     }
 }

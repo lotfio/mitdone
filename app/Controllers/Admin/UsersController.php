@@ -53,23 +53,34 @@ class UsersController extends Controller
         return view('admin/users.show', $data);
     }
 
+    public function delete($id = 0)
+    {
+        $id = (int) $id ?? 0;
+        return $this->users->deleteById($id);
+    }
+
     public function edit($id = 0)
     {
-         $id = (int) $id ?? 0;
+        $id = (int) $id ?? 0;
         $data['user']  = $this->users->getById($id)[0];
-
-
 
         $data['title'] = "Edit User";
         return view('admin/users.edit', $data);
     }
 
 
-
-    public function delete($id = 0)
+    public function processEdit($id = 0)
     {
         $id = (int) $id ?? 0;
-        return $this->users->deleteById($id);
+
+        $data['title'] = "Edit User";
+
+        $data['edit'] = $this->users->editUser($id);
+
+        $data['user']  = $this->users->getById($id)[0];
+        return view('admin/users.edit', $data);
     }
+
+
 }
     

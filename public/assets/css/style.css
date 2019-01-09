@@ -85,11 +85,19 @@ a,p,h1,h2,h3,h4,h5,h6{
     flex-flow: row-reverse;
     margin-bottom: 0;
 }
+.user .profile .info img{
+    padding: 2px;
+    background: #eee;
+}
 .post-media a >  img{
     width: 130px;
     background: #eee;
-    padding: 10px;
+    padding: 2px;
     border-radius: 50%;
+}
+.app-sidebar__user-avatar{
+    background: #eee;
+    padding: 2px;
 }
 .timeline-post{
     position: relative;
@@ -107,4 +115,8 @@ a,p,h1,h2,h3,h4,h5,h6{
 }
 .img-modify > i {
     color: #fff;
+}
+
+#up-img-input{
+    display: none;
 }

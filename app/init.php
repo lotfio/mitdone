@@ -22,5 +22,5 @@ try{
         case 500: 
             view("errors/500");
         break;
-    }
+    }    
 }

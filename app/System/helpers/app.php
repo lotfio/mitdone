@@ -185,7 +185,30 @@ if(!function_exists('image'))
 {
     function image($userImage, $defaultImage = "default-avatar.jpg")
     {
-        if($userImage == '' || (!file_exists(UP_IMG . $userImage))) return UP_IMG . $defaultImage;
+        if($userImage == '' || (!file_exists(PHP_UP_IMG . $userImage))) return UP_IMG . $defaultImage;
+
+
         return UP_IMG . $userImage;
+    }
+}
+
+/**
+ * set user image
+ */
+if(!function_exists('upload'))
+{
+    function upload()
+    {
+        return new \MITDone\Http\FileUpload;
+    }
+}
+/**
+ * set user image
+ */
+if(!function_exists('imageResizer'))
+{
+    function imageResizer($image)
+    {
+        return new \MITDone\Image\Resizer($image);
     }
 }

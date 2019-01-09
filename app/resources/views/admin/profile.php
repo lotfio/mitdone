@@ -9,7 +9,7 @@ $admin = auth()->user(); // auth admin
       <div class="row user">
         <div class="col-md-12">
           <div class="profile">
-            <div class="info"><img class="user-img" src="<?=UP_IMG.$admin->image?>">
+            <div class="info"><img class="user-img" src="<?=e(image($admin->image))?>">
               <h4><?=$admin->name?></h4>
               <p><?=$admin->username?></p>
             </div>
@@ -46,7 +46,7 @@ $admin = auth()->user(); // auth admin
               </div> -->
 
               <div class="timeline-post">
-                <div class="post-media"><a href="#"><img src="<?=UP_IMG.$admin->image?>"></a>
+                <div class="post-media"><a href="#"><img src="<?=e(image($admin->image))?>"></a>
                   <div class="content">
                     <h5><a href="#">John Doe</a></h5>
                     <p class="text-muted"><small>2 January at 9:30</small></p>
@@ -80,7 +80,7 @@ $admin = auth()->user(); // auth admin
                   <div class="row">
                     <div class="col-md-8 mb-4">
                       <label>Email</label>
-                      <input class="form-control" type="text" name="email" value="<?=$admin->email?>">
+                      <input class="form-control" type="text" name="email" value="<?=$admin->Address?>">
                     </div>
                     <div class="clearfix"></div>
                     <div class="col-md-8 mb-4">

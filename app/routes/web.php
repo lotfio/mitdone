@@ -36,4 +36,5 @@ Router::get('/admin/users', "Admin\\UsersController@index");
 
 Router::get('/admin/users/show/{id}', "Admin\\UsersController@show")->filter(["id"=>"/[0-9]+/"]);
 Router::get('/admin/users/edit/{id}', "Admin\\UsersController@edit")->filter(["id"=>"/[0-9]+/"]);
+Router::post('/admin/users/edit/{id}', "Admin\\UsersController@processEdit")->filter(["id"=>"/[0-9]+/"]);
 Router::delete('/admin/users/delete/{id}', "Admin\\UsersController@delete")->filter(["id"=>"/[0-9]+/"]);

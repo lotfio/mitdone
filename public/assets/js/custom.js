@@ -53,6 +53,19 @@ $(function(){
                 }
 
           });
-        })
+        }) // 
+
+        // image button
+        $('#up-img').on('click', ()=>{
+
+            $('#up-img-input').click();
+        });
+
+        $('.animated-checkbox label').on('click', ()=>{
+
+           // $(this).children('input').attr('checked', 'on');
+
+            console.log($(this));
+        });
 
 });

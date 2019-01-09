@@ -45,6 +45,11 @@ class Validate
         return filter_var($inp, FILTER_VALIDATE_INT);
     }
 
+    public function text($inp)
+    {
+        return filter_var();
+    }
+
     /**
      * generate csrf input
      *

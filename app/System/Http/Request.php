@@ -13,9 +13,13 @@
 
  class Request
  {
-     public function post($input)
-     {
-         if(isset($_POST[$input])) return $_POST[$input];
-         return false;
-     }
+
+    public function post($input)
+    {
+        if($_SERVER['REQUEST_METHOD'] === "POST")
+        {
+            if(isset($_POST[$input])) return $_POST[$input];
+        }
+        return false;
+    }
  }

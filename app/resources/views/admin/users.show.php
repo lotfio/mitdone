@@ -51,7 +51,7 @@
                         <div class="table">
                             <div><b>User ID  :</b> <?=$data->user->id?></div>
                             <div><b>User Name  :</b> <?=$data->user->name?></div>
-                            <div><b>Email :</b> <?=$data->user->email?></div>
+                            <div><b>Email :</b> <?=$data->user->Address?></div>
                             <div><b>Phone number :</b> <?=$data->user->phone?></div>
                             <div><b>JOIN DATE :</b> <?=$data->user->created_at?></div>
                         </div>

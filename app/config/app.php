@@ -44,6 +44,9 @@ define('CSS_FOLDER',    ASSETS_FOLDER  . 'css'    . DS);
 define('JS_FOLDER',     ASSETS_FOLDER  . 'js'     . DS);
 define('IMG_FOLDER',    ASSETS_FOLDER  . 'img'    . DS);
 
+define('PHP_UP_FILE', PUB_FOLDER  . 'uploads' . DS .  'files' . DS);
+define('PHP_UP_IMG',  PUB_FOLDER  . 'uploads' . DS . 'img' . DS);
+
 // public folders http
 define('PUB',    URL      . 'public'   . DS);
 define('ASSETS', URL      . BASE_URI   . 'assets' . DS);

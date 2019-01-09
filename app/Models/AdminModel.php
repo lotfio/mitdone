@@ -34,9 +34,10 @@ class AdminModel extends Model
  
         if(empty($data['errors']))
         {
-            $find = $this->select->from('users','*', [
+            $find = $this->select->from('users','*', [ // admins ith role id 1 only 
                 "phone    | = " => $phone . '| and',
-                "password | = " => SHA1($passwd)
+                "password | = " => SHA1($passwd) . "| and",
+                "role_id  | = " => 1
             ]);
             
             if($find)
