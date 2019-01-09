@@ -120,3 +120,9 @@ a,p,h1,h2,h3,h4,h5,h6{
 #up-img-input{
     display: none;
 }
+table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable td:last-child, table.table-bordered.dataTable td:last-child{
+    width: 17%;
+}
+table .btn-sm{
+    margin-bottom: 4px;
+}

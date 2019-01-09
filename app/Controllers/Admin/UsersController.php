@@ -28,7 +28,11 @@ class UsersController extends Controller
         $this->users  = new UsersModel;
     }
 
-
+    /**
+     * index method
+     *
+     * @return void
+     */
     public function index()
     {
         $data['title']    = tr(25);
@@ -53,12 +57,24 @@ class UsersController extends Controller
         return view('admin/users.show', $data);
     }
 
+    /**
+     * delete
+     *
+     * @param integer $id
+     * @return void
+     */
     public function delete($id = 0)
     {
         $id = (int) $id ?? 0;
         return $this->users->deleteById($id);
     }
 
+    /**
+     * edit
+     *
+     * @param integer $id
+     * @return void
+     */
     public function edit($id = 0)
     {
         $id = (int) $id ?? 0;
@@ -68,7 +84,12 @@ class UsersController extends Controller
         return view('admin/users.edit', $data);
     }
 
-
+    /**
+     * edit process
+     *
+     * @param integer $id
+     * @return void
+     */
     public function processEdit($id = 0)
     {
         $id = (int) $id ?? 0;
@@ -79,6 +100,16 @@ class UsersController extends Controller
 
         $data['user']  = $this->users->getById($id)[0];
         return view('admin/users.edit', $data);
+    }
+
+    public function notify($id = 0)
+    {
+        
+    }
+
+    public function message($id = 0)
+    {
+
     }
 }
     

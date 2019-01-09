@@ -46,9 +46,11 @@
                     <td><?=$user->phone?></td>
                     <td><?=$user->created_at?></td>
                     <td>
-                      <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-success btn-sm"><i class="fa fa-eye fa-fw"></i></a>
-                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm"><i class="fa fa-edit fa-fw"></i></a>
-                      <a data-id="<?=e($user->id)?>" class="btn btn-danger btn-sm btn-delete"><i class="fa fa-trash fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Show"><i class="fa fa-eye fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/notify/<?=e($user->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-bell fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/message/<?=e($user->id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-envelope fa-fw"></i></a>
+                      <a data-id="<?=e($user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                  <?php endforeach?>

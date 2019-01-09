@@ -38,3 +38,6 @@ Router::get('/admin/users/show/{id}', "Admin\\UsersController@show")->filter(["i
 Router::get('/admin/users/edit/{id}', "Admin\\UsersController@edit")->filter(["id"=>"/[0-9]+/"]);
 Router::post('/admin/users/edit/{id}', "Admin\\UsersController@processEdit")->filter(["id"=>"/[0-9]+/"]);
 Router::delete('/admin/users/delete/{id}', "Admin\\UsersController@delete")->filter(["id"=>"/[0-9]+/"]);
+
+Router::delete('/admin/users/notify/{id}', "Admin\\UsersController@notify")->filter(["id"=>"/[0-9]+/"]);
+Router::delete('/admin/users/message/{id}', "Admin\\UsersController@message")->filter(["id"=>"/[0-9]+/"]);
