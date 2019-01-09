@@ -116,6 +116,29 @@ if(!function_exists('auth'))
     }
 }
 
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('session'))
+{
+    function session()
+    {
+      return new MITDone\Http\Session;
+    }
+}
+/**
+ *  post function
+ *  
+ */
+if(!function_exists('cookie'))
+{
+    function cookie()
+    {
+      return new MITDone\Http\Cookie;
+    }
+}
+
 if(!function_exists('singleView'))
 {
     function singleView($file, $data = NULL)

@@ -13,5 +13,14 @@
 
  class Cookie
  {
-     
+     public function set($name, $value, $exp, $path = "/", $secure = FALSE, $httpOnly = FALSE)
+     {
+
+     }
+
+     public function get($name)
+     {
+        if(isset($_COOKIE[$name])) return $_COOKIE[$name];
+        return false;
+     }
  }

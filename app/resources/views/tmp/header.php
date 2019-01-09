@@ -14,4 +14,7 @@
       var base_uri = '<?=BASE_URI?>';
     </script>
   </head>
-  <body>
+  <body class="app sidebar-mini rtl pace-done ">
+  <script>
+        if ( localStorage.getItem("nv_menu")==1 ){document.body.className += "sidenav-toggled";}
+    </script>

@@ -81,5 +81,6 @@
 </main>
 
 
-<?= singleView('tmp/footer', $data);?>
+<?= singleView('tmp/js', $data);?>
 <script type="text/javascript" src="<?=JS?>plugins/sweetalert.min.js"></script>
+<?= singleView('tmp/footer')?>

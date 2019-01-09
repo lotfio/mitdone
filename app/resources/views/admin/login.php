@@ -65,4 +65,12 @@
     </div>
 </section>
 
+<?= singleView('tmp/js')?>
+<script type="text/javascript">
+    // Login Page Flipbox control
+    $('.login-content [data-toggle="flip"]').click(function() {
+    $('.login-box').toggleClass('flipped');
+    return false;
+    });
+</script>
 <?= singleView('tmp/footer')?>

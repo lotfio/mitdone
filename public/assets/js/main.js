@@ -6,7 +6,16 @@
 	// Toggle Sidebar
 	$('[data-toggle="sidebar"]').click(function(event) {
 		event.preventDefault();
+
 		$('.app').toggleClass('sidenav-toggled');
+
+		if($('.app').hasClass('sidenav-toggled'))
+		{
+			localStorage.setItem("nv_menu",1);
+		}else{
+			localStorage.setItem("nv_menu",0);
+		}
+
 	});
 
 	// Activate sidebar treeview toggle

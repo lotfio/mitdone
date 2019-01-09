@@ -54,7 +54,7 @@
               
             <form class="update-frm" method="POST" enctype="multipart/form-data" href="<?=BASE_UIR?>admin/users/edit/<?=e($data->user->id)?>">
 
-              <div class="img-modify" id="up-img"><i class="fa fa-image fa-fw"></i></div>
+              <div class="img-modify" id="up-img" data-toggle="tooltip" data-placement="right" title="" data-original-title="change Image"><i class="fa fa-image fa-fw"></i></div>
                 <div class="post-media"><a href="#"><img src="<?=image($data->user->image, 'default-avatar.png')?>"></a>
                 <input class="form-control" type="file" name="image" id="up-img-input">
 
@@ -130,4 +130,5 @@
 </main>
 
 
-<?= singleView('tmp/footer', $data);?>
+<?= singleView('tmp/js')?>
+<?= singleView('tmp/footer')?>

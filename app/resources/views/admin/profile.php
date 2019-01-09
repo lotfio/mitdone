@@ -111,4 +111,6 @@ $admin = auth()->user(); // auth admin
       </div>
     </main>
 
-    <?= singleView('tmp/footer')?>
+
+<?= singleView('tmp/js')?>
+<?= singleView('tmp/footer')?>
