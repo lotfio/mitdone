@@ -126,3 +126,10 @@ table.table-bordered.dataTable th:last-child, table.table-bordered.dataTable th:
 table .btn-sm{
     margin-bottom: 4px;
 }
+.message-frm h6{
+    color: #888;
+}
+
+.message-frm h6 span{
+    color: #009688;
+}

@@ -104,12 +104,16 @@ class UsersController extends Controller
 
     public function notify($id = 0)
     {
-        
+        $data['title'] = "Notify User";
+        $data['user']  = $this->users->getById($id)[0];
+        return view('admin/users.notify', $data);
     }
 
     public function message($id = 0)
     {
-
+        $data['title'] = "Message User";
+        $data['user']  = $this->users->getById($id)[0];
+        return view('admin/users.message', $data);
     }
 }
     

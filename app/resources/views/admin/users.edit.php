@@ -96,7 +96,7 @@
 
                 </div>
 
-                <div class="tile-footer">
+            <div class="tile-footer">
               <button class="btn btn-primary" type="submit" name="update" value="update">
               <i class="fa fa-fw fa-lg fa-check-circle"></i>Register</button>&nbsp;&nbsp;&nbsp;
               <button class="btn btn-secondary" href="#"><i class="fa fa-fw fa-lg fa-times-circle"></i>Cancel</button>
