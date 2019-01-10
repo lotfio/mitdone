@@ -174,6 +174,18 @@ class UsersModel extends Model
                 }  
             }
         endif;
+    }
+
+    public function notify($id = 0)
+    {
+        if(post('notify'))
+        {
+            dd(post('notification'));
+        }
+    }
+
+    public function message($id = 0)
+    {
 
     }
 }

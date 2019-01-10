@@ -106,6 +106,8 @@ class UsersController extends Controller
     {
         $data['title'] = "Notify User";
         $data['user']  = $this->users->getById($id)[0];
+
+        $data['notify'] = $this->users->notify($id);
         return view('admin/users.notify', $data);
     }
 
@@ -113,6 +115,8 @@ class UsersController extends Controller
     {
         $data['title'] = "Message User";
         $data['user']  = $this->users->getById($id)[0];
+
+        $data['mesage'] = $this->users->message($id);
         return view('admin/users.message', $data);
     }
 }

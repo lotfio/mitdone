@@ -133,3 +133,23 @@ table .btn-sm{
 .message-frm h6 span{
     color: #009688;
 }
+.btn-group .btn > i{
+    vertical-align: -webkit-baseline-middle;
+}
+.btn-group .btn:first-child > i{
+    position: relative;
+    top: -4px;
+}
+.breadcrumb{
+    display: block;
+}
+.breadcrumb > li{
+    float: left;
+    padding-top: 3px;
+}
+.breadcrumb .btn{
+    float: right;
+}
+.clear-fix{
+    clear:both;
+}

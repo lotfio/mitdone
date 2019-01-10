@@ -21,6 +21,8 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=BASE_URI?>admin/users/">Users</a></li>
             <li class="breadcrumb-item active">Show</li>
+            <button onclick="javascript:window.history.back();"class="btn btn-primary btn-sm">back</button>
+            <div class="clear-fix"></div>
         </ol>
     </div>
 </div>
@@ -35,8 +37,10 @@
 
             <div class="tile-title-w-btn">
                 <div class="btn-group">
-                    <a class="btn btn-primary" href="<?=BASE_URI.'admin/users/edit/'.$data->user->id?>"><i class="fa fa-lg fa-edit"></i></a>
-                    <a class="btn btn-danger btn-delete" data-id="<?=$data->user->id?>" data-place="show"><i class="fa fa-lg fa-trash"></i></a>
+                    <a class="btn btn-primary btn" href="<?=BASE_URI.'admin/users/edit/'.$data->user->id?>"><i class="fa fa-lg fa-edit"></i></a>
+                    <a href="<?=BASE_URI?>admin/users/notify/<?=e($data->user->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-lg fa-bell fa-fw"></i></a>
+                    <a href="<?=BASE_URI?>admin/users/message/<?=e($data->user->id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-lg fa-envelope fa-fw"></i></a>
+                    <a data-id="<?=e($data->user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-lg fa-trash fa-fw"></i></a>
                 </div>
             </div>
            
@@ -51,8 +55,8 @@
                         <div class="table">
                             <div><b>User ID  :</b> <?=$data->user->id?></div>
                             <div><b>User Name  :</b> <?=$data->user->name?></div>
-                            <div><b>Email :</b> <?=$data->user->Address?></div>
                             <div><b>Phone number :</b> <?=$data->user->phone?></div>
+                            <div><b>Address :</b> <?=$data->user->Address?></div>
                             <div><b>JOIN DATE :</b> <?=$data->user->created_at?></div>
                         </div>
                       

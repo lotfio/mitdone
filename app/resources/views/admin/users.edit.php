@@ -18,9 +18,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        <ol class="breadcrumb">
+    <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="<?=BASE_URI?>admin/users/">Users</a></li>
             <li class="breadcrumb-item active">Edit</li>
+            <button onclick="javascript:window.history.back();"class="btn btn-primary btn-sm">back</button>
+            <div class="clear-fix"></div>
         </ol>
     </div>
 </div>
