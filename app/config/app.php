@@ -15,7 +15,7 @@ define('DS', DIRECTORY_SEPARATOR);
 define('AVAIL_LANG', ["ar","en",'fr']);
 define('DEF_LANG', AVAIL_LANG[1]);
 
-define('PROTOCOL',  $_SERVER['REQUEST_SCHEME']);
+define('PROTOCOL',  $_SERVER['REQUEST_SCHEME'] ?? 'http');
 define('HOST',      $_SERVER['HTTP_HOST']);
 //define('BASE_URI',  '/'); // if no sub directories keep this empty do not add slash / NGINX
 define('BASE_URI',  '/doctortech-lotfio/'); // APACHE

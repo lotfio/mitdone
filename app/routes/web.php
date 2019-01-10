@@ -19,7 +19,7 @@ Router::config([
 
 // web routes will be defined here
 
-Router::get('/', "indexController@index");
+Router::get('/', "IndexController@index");
 
 // admin routes
 Router::get('/admin', "Admin\\LoginController@showLoginForm");

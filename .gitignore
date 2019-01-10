@@ -1,3 +1,4 @@
 .env
 app/storage/cache/*
 app/storage/sessions/*
+.vscode

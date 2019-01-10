@@ -12,7 +12,7 @@
  */
 use MITDone\App\Model;
 use MITDone\Http\FileUpload;
-use MITDone;
+use Controllers\Api\Api;
 
 class UsersModel extends Model
 {
@@ -181,7 +181,7 @@ class UsersModel extends Model
     {
         if(post('notify'))
         {
-           $user = new MITDone\Api;
+           $user = new Api;
         }
     }
 
