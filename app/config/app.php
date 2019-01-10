@@ -102,6 +102,8 @@ define('ADDED_AMOUNT', 'تم تحديث حالة المطالبات المالي
 define('KM_UINT', 'كيلو متر');
 define('M_UINT', 'متر');
 define('API_ACCESS_KEY', 'AIzaSyBNz2ea2uBehqSXKHpKpbjzcgegHol54YE' );
+define('API_NOTIFICATION_KEY', 'AAAAhaTHTaM:APA91bFRfiacA2cLmppisQoD5EC0QysI-OyqSNcvEc391OrTWhLKaSjCrU19kriCx2d3w2dimP_WbXLZoXXGDA-1adkKCjLsVXx8IAUkbPs-rC6XyT0sElscVM0swH_tCe2txvhfNdkT' );
+define('NOTIC_URL', 'https://fcm.googleapis.com/fcm/send');
 
 
 define('DELETE_USER', '0'); // access key aver change

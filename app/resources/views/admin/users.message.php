@@ -32,36 +32,55 @@
             <div class="timeline-post"> <!-- Time line post -->
 
             <?php if(is_object($data->user)): ?>
+
                 <div class="col-md-4">
-                    <form class="form-horizontal message-frm">
+                <form class="form-horizontal message-frm" href="<?=BASE_URI?>admin/users/message/<?=$data->user->id?>" method="POST">
 
-                        
-                        <h6>Send Message To : <span><?=e($data->user->name)?></span></h6>
+                    <?php if(isset($data->message)): ?>
+
+                    <?php if(is_array($data->message)):?>
+                        <?php foreach($data->message as $err):?>
+                        <div class="alert alert-dismissible alert-danger">
+                            <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
+                            <?=$err?>
+                        </div>
+                        <?php endforeach?>
+                    <?php else: ?>
+                    <div class="alert alert-dismissible alert-success">
+                            <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
+                            Notification has been sent successfully to <?=$data->user->name?>
+                        </div>
+                    <?php endif ?>
+
+                    <?php endif ?>
                     
-                        <div class="tile-footer"></div>
+                    <h6>Send Notification To : <span><?=e($data->user->name)?></span></h6>
 
-                        <div class="form-group">
-                            <div>
-                            <textarea class="form-control" rows="3" placeholder="Enter your message here ..."></textarea>
-                            </div>
+                    <div class="tile-footer"></div>
+
+                    <div class="form-group">
+                        <div>
+                        <textarea class="form-control" name="message" rows="5" placeholder="Enter your message here ..."></textarea>
                         </div>
-
-                        <div class="tile-footer">
-                        <button class="btn btn-primary" type="submit" name="update" value="update">
-                        <i class="fa fa-fw fa-lg fa-envelope"></i> Send</button>
-                        <button class="btn btn-secondary" type="reset" name="update" value="update">
-                        <i class="fa fa-fw fa-lg fa-times"></i> Clear</button>
-                        </div>
-                        
-
-                        </form>
-                </div>
-                <?php else:?>
-                    <br>
-                    <div class="alert alert-dismissible alert-danger">
-                        <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
-                        No User Were Found !
                     </div>
+
+                    <div class="tile-footer">
+                    <button class="btn btn-primary" type="submit" name="send-message" value="send-message">
+                    <i class="fa fa-fw fa-lg fa-envelope"></i> Message</button>
+                    <button class="btn btn-secondary" type="reset">
+                    <i class="fa fa-fw fa-lg fa-times"></i> Clear</button>
+                    </div>
+                    
+
+                    </form>
+                </div>
+
+                    <?php else:?>
+                        <br>
+                        <div class="alert alert-dismissible alert-danger">
+                            <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
+                            No User Were Found !
+                        </div>
                 <?php endif?>
             </div>
         </div>

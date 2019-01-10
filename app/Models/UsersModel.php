@@ -12,7 +12,7 @@
  */
 use MITDone\App\Model;
 use MITDone\Http\FileUpload;
-use Controllers\Api\Api;
+require CONTROLLERS . 'Api' . DS . 'Api.php';
 
 class UsersModel extends Model
 {
@@ -181,12 +181,43 @@ class UsersModel extends Model
     {
         if(post('notify'))
         {
-           $user = new Api;
+            $errors = [];
+
+            if(!validate()->string(post('title')))      $errors[] = "Please add a notification title";
+            if(!validate()->string(post('message')))    $errors[] = "Please add a notification message";
+
+            $title     = post('title');
+            $message   = post('message');
+
+            if(empty($errors))
+            {
+                $user = new \User($id);
+                $user->SendNotification($title, $message);
+                return true;
+            }
+            
+           return $errors;
         }
     }
 
     public function message($id = 0)
     {
+        if(post('send-message'))
+        {
+            $errors = [];
 
+            if(!validate()->string(post('message')))    $errors[] = "Please add a message content";
+
+            $message   = post('message');
+
+            if(empty($errors))
+            {
+                $user = new \User($id);
+                $user->SendSMS($message);
+                return true;
+            }
+            
+           return $errors;
+        }
     }
 }

@@ -16,11 +16,11 @@ try{
 
     switch($e->getCode())
     {
-        case 404: 
-            view("errors/404");
+        case 404: view("errors/404");
         break;
-        case 500: 
-            view("errors/500");
+        case 500: view("errors/500");
+        break;
+        default:  view("errors/500");
         break;
     }    
 }

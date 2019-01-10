@@ -116,7 +116,7 @@ class UsersController extends Controller
         $data['title'] = "Message User";
         $data['user']  = $this->users->getById($id)[0];
 
-        $data['mesage'] = $this->users->message($id);
+        $data['message'] = $this->users->message($id);
         return view('admin/users.message', $data);
     }
 }

@@ -18,7 +18,6 @@ class IndexController extends Controller
 {
     public function index()
     {
-       //echo validate()->generateCSRF();
        echo __CLASS__;
     }
 }

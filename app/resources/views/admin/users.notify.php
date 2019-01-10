@@ -36,14 +36,35 @@
                     <div class="col-md-4">
                     <form class="form-horizontal message-frm" href="<?=BASE_URI?>admin/users/notify/<?=$data->user->id?>" method="POST">
 
+                        <?php if(isset($data->notify)): ?>
+
+                        <?php if(is_array($data->notify)):?>
+                            <?php foreach($data->notify as $err):?>
+                            <div class="alert alert-dismissible alert-danger">
+                                <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
+                                <?=$err?>
+                            </div>
+                            <?php endforeach?>
+                        <?php else: ?>
+                        <div class="alert alert-dismissible alert-success">
+                                <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
+                                Notification has been sent successfully to <?=$data->user->name?>
+                            </div>
+                        <?php endif ?>
+
+                        <?php endif ?>
                         
                         <h6>Send Notification To : <span><?=e($data->user->name)?></span></h6>
                     
                         <div class="tile-footer"></div>
 
                         <div class="form-group">
+                        <input class="form-control" type="text" placeholder="Notification Title" name="title">
+                        </div>
+
+                        <div class="form-group">
                             <div>
-                            <textarea class="form-control" name="notification" rows="3" placeholder="Enter your notification here ..."></textarea>
+                            <textarea class="form-control" name="message" rows="5" placeholder="Enter your notification here ..."></textarea>
                             </div>
                         </div>
 

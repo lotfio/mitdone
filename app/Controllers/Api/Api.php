@@ -1,22 +1,12 @@
-<?php namespace Controllers\Api;
+<?php
 
-/**
- * MItdone LLC
- *
- * Created : 10-16-2018
- *
- * Type MVC Admin panel & app Api cells
- *
- * Customer support Link https://www.mitdone.com/support/projects/1000000478145
- *
- */
+
 class Api
 {
   public function v2()
   {
       $user = Authorization::Token();
       $target = func_get_args();
-
       if ($user&&$user->valid) {$user->GetIp(); $this->ParseRequest($target);return;}
       if(count($target)>=2&&$target[0]=="sheared"&&$target[1]=="files"){$this->ParseRequest($target);return;}
        $autho = isset($_REQUEST['client_secret'])?$_POST:Authorization::AuthoFail();
@@ -24,22 +14,17 @@ class Api
        if (!Authorization::CheckAuthoRequest($autho,$client_id)) {Authorization::AuthoFail();}
       $this->ParseRequest($target);
   }
-  public function Test($value='')
-  {
-    Notification::NoticAllEngineers(65);die();
-  }
   protected function ParseRequest($param){
-            $Req_class = $param[0];
-            $Req_method =  isset($param[1])?$param[1]:Authorization::UnsupportedRequest();
-            if(!AllowedRequests::Check($Req_class)){Authorization::UnsupportedRequest();}
-            $Server = 'Controllers\\Api\\' . $Req_class;
-            $Server = new $Server();
-
-            if (!method_exists($Server,$Req_method)) {Authorization::UnsupportedRequest();}
-            unset($param[1]);
-            unset($param[0]);
-            $param =$param ? array_values($param): [];
-            call_user_func_array([$Server,$Req_method],$param);
+    $Req_class = $param[0];
+    $Req_method =  isset($param[1])?$param[1]:Authorization::UnsupportedRequest();
+    if(!AllowedRequests::Check($Req_class)){Authorization::UnsupportedRequest();}
+    $Server = 'Controllers\\Api\\' . $Req_class;
+    $Server = new $Server;
+    if (!method_exists($Server,$Req_method)) {Authorization::UnsupportedRequest();}
+    unset($param[1]);
+    unset($param[0]);
+    $param =$param ? array_values($param): [];
+    call_user_func_array([$Server,$Req_method],$param);
   }
 
 }
@@ -50,7 +35,7 @@ class Api
   *
   */
 
-class user extends DBHelper
+class User extends DBHelper
 {
 
   public function __construct($token=false)
@@ -80,7 +65,53 @@ class user extends DBHelper
           $this->servce_debt = $this->servce_debt<=0?$this->servce_debt:0;
     }
   }
-
+  public function IsInRange($id)
+  {
+    return false;
+    // $arrys = json_decode($this->Info->notic_city_ids);
+    // return in_array($id,$arrys);
+  }
+  public function SendNotification($titel,$message,$type = "app"){
+    if ($this->Info->notifications=="0") {
+      return;
+    }
+    $tokens = $this->GetRowMultyConditions("devicetoken",['user_id','type'],[$this->Info->id,"Android"]);
+    while ($row = mysqli_fetch_assoc($tokens)) {
+      $this->SendAndroidPushNotification($row['device_token'],$titel,$message,$type);
+    }
+  }
+  public function SendAndroidPushNotification($token,$titel,$message,$type = "app"){
+    $notification = [
+            'title' =>$titel,
+            'body' => $message,
+            'sound' => 'default'
+        ];
+        $extraNotificationData = ["message" => $notification,"type" =>$type];
+        $fcmNotification = [
+            'to'                   => $token,
+            'notification'         => $notification,
+            'data'                 => $extraNotificationData
+        ];
+        $headers = ['Authorization: key=' . API_NOTIFICATION_KEY,  'Content-Type: application/json'];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,NOTIC_URL);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+        $result = curl_exec($ch);
+        curl_close($ch);
+  }
+  public function NotificationsSettings()
+  {
+    $user =  $this->RequireLogin("Transactions");
+    $params =  $_POST['params']=="0"?0:1;
+    $Responce = new Responce();
+    if (!$this->Update("users",["notifications"],[$params],['id'],$user->Info->id)) {Authorization::UnknownError();}
+    $Responce->status = true;
+    $Responce->Send();
+  }
   public function Image( )
   {
     $Responce = new Responce();
@@ -113,14 +144,7 @@ class user extends DBHelper
     }
     $Responce->Send();
   }
-    public function TransactionsReports()
-    {
-      $user =  $this->RequireLogin("Transactions");
-      $Responce = new Responce();
-      $Responce->status = true;
-      $Responce->items = $this->FetchArrayObjects("TransactionObject",$this->GetRows('Transactions','user_id',$user->Info->id));
-      $Responce->Send();
-    }
+
     public function TransactionInfo($id)
     {
       $user =  $this->RequireLogin("Transactions");
@@ -168,13 +192,13 @@ class user extends DBHelper
       $Responce->status = true;
       $Responce->balance = $user->Balance;
       $Responce->bank_name = $settings->Info->Bank_Name;
-      $Responce->bank_iban = $settings->Info->Bank_IBAN;
       $Responce->piece_debt = $user->piece_debt;
       $Responce->servce_debt = $user->servce_debt;
       $Responce->total = $Responce->piece_debt + $Responce->servce_debt;
       $Responce->bank_iban = $settings->Info->Bank_IBAN;
       $Responce->user = $user;
       $Responce->max = $settings->Info->min_indebt;
+      $Responce->items = $this->FetchArrayObjects("TransactionObject",$this->GetRows('Transactions','user_id',$user->Info->id," order by `id` DESC"));
       $Responce->Send();
    }
   public function GetIp()
@@ -220,11 +244,11 @@ class user extends DBHelper
     $sender_id= $user->Info->id;
     $order_row = mysqli_fetch_assoc($this->GetRows("ordersrequests","id",$order_id));
     if(!$order_row){
-        $Responce->message = "لا يمكنك إرسال رسالة أو الرد على هاته المحادثة";
+        $Responce->messageid = 198;
         $Responce->Send();
     }
     if($order_row['status']!="PROCESSING"){
-        $Responce->message = "لا يمكنك إرسال رسالة أو الرد على هاته المحادثة";
+        $Responce->message = 198;
         $Responce->Send();
     }
     if($order_row["user_id"]!=$user->Info->id){
@@ -252,6 +276,7 @@ class user extends DBHelper
         Authorization::UnknownError();
       }
       }
+      (new User($receiver_id))->SendNotification($user->Info->name,$message,"message");
     $Responce->message=mysqli_fetch_assoc($this->GetRows("chat",'id',$id));
     $Responce->Send();
 
@@ -289,12 +314,10 @@ class user extends DBHelper
     $user =  $this->RequireLogin("comment");
     $post_id = isset($_POST['post_id'])&&!empty($_POST['post_id'])?$_POST['post_id']:Authorization::FillAllBlanks();
     $comment = isset($_POST['comment'])&&!empty($_POST['comment'])?$_POST['comment']:Authorization::FillAllBlanks();
-    $cmnt_id = $this->Inject("comments",['comment','user_id','post_id'],[$comment,$user->Info->id,$post_id],true);
+    $cmnt_id = $this->Inject("comments",['comment','user_id','post_id',"created_at"],[$comment,$user->Info->id,$post_id,date("Y-m-d H:i:s")],true);
     if (!$cmnt_id){Authorization::UnknownError();}
     $row = mysqli_fetch_assoc($this->GetRows('comments','id',$cmnt_id));
-    $row["user"] = $user->Info;
     $Responce->status = true;
-    $Responce->items =  $row;
     $Responce->Send();
  }
   public function likepost()
@@ -312,6 +335,7 @@ class user extends DBHelper
     $Responce->status = $success;
     $Responce->Send();
  }
+
   public function updateInfo()
   {
     $Responce = new Responce();
@@ -358,19 +382,7 @@ class user extends DBHelper
     $Responce->fee = $settings->Info->fee;
     $Responce->Send();
   }
-  public function newpassword()
-  {
-    $Responce = new Responce();
-    $Responce->status = false;
-    $Code = isset($_POST['code'])&&!empty($_POST['code'])&&strlen($_POST['code'])==6?$_POST['code']:Authorization::FillAllBlanks();
-    $password = isset($_POST['password'])&&!empty($_POST['password'])?$_POST['password']:Authorization::FillAllBlanks();
-    $res = $this->GetRows("users","password_resets",$Code);
-    if (mysqli_num_rows($res)==0) {$Responce->message = "رمز التحقق المستخدم غير صالح . يرجى التأكد منه قبل إعادة المحاولة" ;$Responce->Send();}
-      if (!$this->Update("users",["password_resets","password"],["0",$this->hashPassword($password)],['password_resets'],$Code)) {Authorization::UnknownError();}
-        $Responce->status = true;
-        $Responce->message = "تم تحديث بيناتك بنجاح" ;
-        $Responce->Send();
-     }
+
   public function rest()
   {
     $Responce = new Responce();
@@ -378,15 +390,30 @@ class user extends DBHelper
     $phone = isset($_POST['phone'])&&!empty($_POST['phone'])&&(strlen($_POST['phone'])==9||strlen($_POST['phone'])==10)?$_POST['phone']:Authorization::FillAllBlanks();
     $phone = strlen($phone)==10?substr($phone,1):$phone;
     $res = $this->GetRows('users','phone',$phone);
-    if(mysqli_num_rows($res)==0){$Responce->message = "لم يتم العثور على أي حساب مرتبط بهذا الرقم";$Responce->Send();}
+    if(mysqli_num_rows($res)==0){$Responce->messageid=223;$Responce->Send();}
     $row = mysqli_fetch_assoc($res);
     $user = new User($row['id']);
     if(!$user->RestorePasswordRequest()){
-        $Responce->message = "حدثت مشكلة في ارسال رمز إلى جوالك . يرجى الاتصال بالدعم الفني إن تكررت المشكلة";$Responce->Send();
+        $Responce->messageid = 224;$Responce->Send();
     }else{
         $Responce->status = true;
-        $Responce->message = "تم إرسال رسالة إلى جوالك تساعدك في أستعادة بينات الدخول";$Responce->Send();
+        $Responce->user_id = $user->Info->id;
+        $Responce->messageid = 225;$Responce->Send();
     }
+  }
+  public function checkcode(){
+    $Responce = new Responce();
+    $Responce->status = false;
+    $Code = isset($_POST['code'])&&!empty($_POST['code'])&&strlen($_POST['code'])>=4?$_POST['code']:Authorization::FillAllBlanks();
+    $res = $this->GetRows("users","password_resets",$Code);
+    if (mysqli_num_rows($res)==0) {$Responce->messageid = 233 ;$Responce->Send();}
+      if (!$this->Update("users",["password_resets"],["0"],['password_resets'],$Code)) {Authorization::UnknownError();}
+      $row = mysqli_fetch_assoc($res);
+      $user = new User($row['id']);
+      $row["remember_token"] = $user->SetToken();
+        $Responce->status = true;
+        $Responce->user = new UserObject($row);
+        $Responce->Send();
   }
   public function communicate()
   {
@@ -427,15 +454,41 @@ class user extends DBHelper
     }
     $resiver_id = $offer['user_id']==$user->Info->id?$Order_row['user_id']:$offer['user_id'];
     $notic_msg = $offer['user_id']==$user->Info->id?RATE_NOTIC_USER:RATE_NOTIC_ENG;
+    $notic_msg_id = $offer['user_id']==$user->Info->id?171:170;
     if(!$this->Inject("rating",['UserId','RaterId',"Stars","OrderId"],[$offer['user_id'],$user->Info->id,$stars,$order_id])){
       $Responce->messageid = 105;
       $Responce->Send();
     }else if(mysqli_num_rows($this->GetRowMultyConditions("rating",["OrderId","RaterId"],[$order_id,$resiver_id]))==0) {
-       $this->Inject('notification',['object_id','message','type_id','sender_id','reciever_id','created_at'],
-                  [$order_id,str_replace("#",$user->Info->name,str_replace('*',$stars,$notic_msg)),'3', $user->Info->id,$resiver_id,Date("Y-m-d H:i:s")]);
+       $this->Inject('notification',['object_id','message_id','type_id','sender_id','reciever_id','created_at'],
+                  [$order_id,$notic_msg_id,'3', $user->Info->id,$resiver_id,Date("Y-m-d H:i:s")]);
+                  (new User($resiver_id))->SendNotification("دكتور تك",str_replace("#",$user->Info->name,str_replace('*',$stars,$notic_msg)));
     }
     $Responce->messageid = 106;
     $Responce->Send();
+  }
+  public function SendSMS($message)
+  {
+    if ($this->valid) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,Moblie_SMS);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,
+                http_build_query(array('mobile'                   =>     SMS_USER,
+                                       'password'                 =>     SMS_PASS ,
+                                       'numbers'                  =>     COUNTY_CODE . $this->Info->phone ,
+                                       'sender'                   =>     APP_NAME_EN,
+                                       'msg'                      =>     $message,
+                                       'lang'                     =>     3,
+                                       'applicationType'          =>     3,
+                                       'returnJson'               =>     true)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $server_output = curl_exec($ch);
+        curl_close ($ch);
+        $res = json_decode($server_output);
+        return $res->status;
+    }else {
+        return false;
+    }
   }
   public function RestorePasswordRequest()
   {
@@ -511,17 +564,18 @@ class user extends DBHelper
   {
     $Responce = new Responce();
     $Responce->status = true;
-    $user = $this->RequireLogin('changephone');
+    $user_id = isset($_POST['user_id'])&&!empty($_POST['user_id'])?$_POST['user_id']:Authorization::FillAllBlanks();
+    $user = new User($user_id);
     $remain_time = SEND_CODE_DELAY - (strtotime(Date('Y-m-d H:i:s'))-strtotime($user->Info->phone_send_time));
     if ($remain_time>0) {
       $Responce->Remain_time = $remain_time;
-      $Responce->message = "يرجي الانتظار قبل إعادة ارسال رمز التحقق . يمكنك اعادة المحاولة بعد  " . $remain_time . " ثواني" ;
+      $Responce->messageid = 231;
       $Responce->Send();
     }
     if (!$user->SendPhoneCode()) {Authorization::UnknownError();}
     if (!$this->Update('users',['phone_send_time'],[date("Y-m-d H:i:s")],['id'],$user->Info->id)){Authorization::UnknownError();}
-    $Responce->Remain_time = SEND_CODE_DELAY;
-    $Responce->message = "تم إعادة ارسال الرمز لرقم الجوال الخاص بك";
+    $Responce->Remain_time = SEND_CODE_DELAY * 1000;
+    $Responce->messageid = 232;
     $Responce->Send();
   }
   public function devices(){
@@ -531,7 +585,7 @@ class user extends DBHelper
     $operation = isset($_POST['operation'])&&!empty($_POST['operation'])?$_POST['operation']:Authorization::FillAllBlanks();
     $type = isset($_POST['type'])&&!empty($_POST['type'])?$_POST['type']:Authorization::FillAllBlanks();
     $device_token = isset($_POST['device_token'])&&!empty($_POST['device_token'])?$_POST['device_token']:Authorization::FillAllBlanks();
-    $this->DeleteRow("devicetoken",'device_token',$device_token);
+    $this->DeleteRow("devicetoken",['device_token'],$device_token);
     if ($operation=='add') { $this->Inject('devicetoken',['type','device_token','user_id'],[$type,$device_token,$user->Info->id]);}
     $Responce->Send();
   }
@@ -566,7 +620,7 @@ class user extends DBHelper
     if (!$user->SendPhoneCode()) {Authorization::UnknownError();}
     if (!$this->Update('users',['phone_send_time'],[date("Y-m-d H:i:s")],['id'],$user->Info->id)){Authorization::UnknownError();}
 
-    $Responce->Remain_time = SEND_CODE_DELAY;
+    $Responce->Remain_time = SEND_CODE_DELAY * 1000;
     $Responce->message = '0' . $new_phone;
     $Responce->code = 1;
     $Responce->Send();
@@ -591,7 +645,7 @@ class user extends DBHelper
   {
       $Responce = new Responce();
       $name = isset($_POST['name'])&&!empty($_POST['name'])?$_POST['name']:Authorization::FillAllBlanks();
-      $username = isset($_POST['username'])&&!empty($_POST['username'])?$_POST['username']:Authorization::FillAllBlanks();
+      $username = isset($_POST['username'])&&!empty($_POST['username'])?$_POST['username']: $name  . "_" . rand(1111,9999);
       $phone = isset($_POST['phone'])&&!empty($_POST['phone'])&&(strlen($_POST['phone'])==9||strlen($_POST['phone'])==10)?$_POST['phone']:Authorization::FillAllBlanks();
       $password = isset($_POST['password'])&&!empty($_POST['password'])?$_POST['password']:Authorization::FillAllBlanks();
       $phone = strlen($phone)==10?substr($phone,1):$phone;
@@ -619,11 +673,12 @@ class user extends DBHelper
     $Order_object = new OfferObject($order_id);
     $user_id = mysqli_fetch_assoc($this->GetRows("ordersrequests","id",$order_id))["user_id"];
     if (!$this->Update('ordersrequests',['status'],['COMPLETE'],['id'],$order_id)||
-        !$this->Inject('notification',['object_id','message','type_id','sender_id','reciever_id','created_at'],
-        [$order_id,str_replace('*',$Engineer->Info->name,DELEVERED_ORDER_NOTIC),'3', $Engineer->Info->id,$user_id,Date("Y-m-d H:i:s")]) ||
+        !$this->Inject('notification',['object_id','message_id','type_id','sender_id','reciever_id','created_at'],
+        [$order_id,168,'3', $Engineer->Info->id,$user_id,Date("Y-m-d H:i:s")]) ||
         !$Engineer->CutFromOffer($offer_id)
         )
          {Authorization::UnknownError();}
+         (new User($user_id))->SendNotification($Engineer->Info->name,str_replace('*',$Engineer->Info->name,DELEVERED_ORDER_NOTIC));
         $Responce->status = true;
         $Responce->Send();
   }
@@ -638,8 +693,9 @@ class user extends DBHelper
      $offer_object = new OfferObject($offer_id);
      $Engineer = new User($offer_object->user_id);
      if (!$this->Update('ordersrequests',['price','orderoffer_id','status'],[$offer_object->total_price,$offer_object->id,'PROCESSING'],['id'],$order_id)||
-         !$this->Inject('notification',['object_id','message','type_id','sender_id','reciever_id','created_at'],
-         [$order_id,ACCEPT_OFFER_NOTIC . $user->Info->name,'1',$user->Info->id,$Engineer->Info->id,Date("Y-m-d H:i:s")])) {Authorization::UnknownError();}
+         !$this->Inject('notification',['object_id','message_id','type_id','sender_id','reciever_id','created_at'],
+         [$order_id,167,'1',$user->Info->id,$Engineer->Info->id,Date("Y-m-d H:i:s")])) {Authorization::UnknownError();}
+            (new User($Engineer->Info->id))->SendNotification($user->Info->name,ACCEPT_OFFER_NOTIC . $user->Info->name);
          $Responce->status = true;
          $Responce->Send();
   }
@@ -659,9 +715,10 @@ class user extends DBHelper
     $user = $this->RequireLogin('addoffer');
     if ($user->Balance<-(new Settings())->Info->min_indebt) {
       $Responce->status = false;
-      $Responce->message = "لقد تجاوزت السقف الإئتماني . لا يمكنك إضافة عروض حتى يتم تسدسد المستحقات";
+      $Responce->messageid = 204;
       $Responce->Send();
     }
+
     $order_id = isset($_POST['id'])&&!empty($_POST['id'])?$_POST['id']:Authorization::FillAllBlanks();
     $Offer_Desc = isset($_POST['Offer_Desc'])&&!empty($_POST['Offer_Desc'])?$_POST['Offer_Desc']:Authorization::FillAllBlanks();
 
@@ -681,28 +738,43 @@ class user extends DBHelper
     $Piece_Type =  $_POST['Piece_Type'];
     $Servce_Type = isset($_POST['Servce_Type'])&&!empty($_POST['Servce_Type'])?$_POST['Servce_Type']:Authorization::FillAllBlanks();
     $offer_garanty_id = isset($_POST['offer_garanty_id'])?$_POST['offer_garanty_id']:Authorization::FillAllBlanks();
-     if (mysqli_num_rows($this->GetRowMultyConditions("ordersoffers",["order_id","user_id"],[$order_id,$user->Info->id]))>0) {
-      $Responce->status = true;
-      $Responce->code = 1;
-      $Responce->items = mysqli_fetch_assoc($this->GetRowMultyConditions("ordersoffers",["order_id","user_id"],[$order_id,$user->Info->id]));
-      $Responce->Send();
-    }
+    //  if (mysqli_num_rows($this->GetRowMultyConditions("ordersoffers",["order_id","user_id"],[$order_id,$user->Info->id]))>0) {
+    //   $Responce->status = true;
+    //   $Responce->code = 1;
+    //   $Responce->items = mysqli_fetch_assoc($this->GetRowMultyConditions("ordersoffers",["order_id","user_id"],[$order_id,$user->Info->id]));
+    //   $Responce->Send();
+    // }
     $order_row = mysqli_fetch_assoc($this->GetRows("ordersrequests","id",$order_id));
     $onner = mysqli_fetch_assoc($this->GetRows("users","id",$order_row['user_id']));
 
+    if (!empty($order_row['orderoffer_id'])) {
+      $Responce->status = false;
+      $Responce->messageid = 203;
+      $Responce->Send();
+    }
     if(!$this->Inject("ordersoffers",["order_id","offer_description","serevce_price","piece_price","total_price","extra_note","piece_type","servce_type","user_id","Resive_d","Resive_h","Resive_m","fix_d","fix_h","fix_m","created_at","offer_garanty"],
                                       [$order_id,$Offer_Desc,$Serevce_Price,$Piece_Price,$Offer_Total,$Extra_Note,$Piece_Type,$Servce_Type,$user->Info->id,$Resive_d,$Resive_h,$Resive_m,$fix_d,$fix_h,$fix_m,date('Y-m-d H:i:s'),$offer_garanty_id]) ||
-      !$this->Inject("notification",['object_id','message','type_id','sender_id','reciever_id'],
-      [$order_id,NEW_OFFER_NOTIC . $user->Info->name,1,$user->Info->id,$order_row['user_id']])){
+      !$this->Inject("notification",['object_id','message_id','type_id','sender_id','reciever_id'],
+      [$order_id,166,1,$user->Info->id,$order_row['user_id']])){
         Authorization::UnknownError();
      }
+     $Ownner = new User($order_row['user_id']);
+     $Ownner->SendNotification("عرض جديد",NEW_OFFER_NOTIC . $user->Info->name);
+     //SendSMS
+     $Ownner->SendSMS(
+       "عزيزي العميل لديك عرض صيانه لطلبك رقم " .
+       " " . $order_id . " " .
+       "بمبلغ " .
+       " " . $Offer_Total . " " .
+       "ريال شاهد تفاصيل العرض في تطبيق دكتور تك "
+     );
+
      $Responce->status = true;
      $Responce->Send();
   }
   public function join()
   {
-     $user = $this->RequireLogin('join');
-     $JoinRequest = new JoinRequest($_POST);
+     $JoinRequest = new JoinRequest($this);
      $JoinRequest->Send();
   }
   public function order()
@@ -733,6 +805,16 @@ class user extends DBHelper
     $Responce->items =  $this->FetchArrayObjects('OfferObject',$this->GetRows('ordersoffers','order_id',$id," order by `id` DESC"));
     $Responce->status = true;
     $Responce->Send();
+  }
+  public function RemoveOffer()
+  {
+    $Responce = new Responce();
+    $user = $this->RequireLogin('addoffer');
+    $offer_id =  isset($_POST['offer_id'])&&!empty($_POST['offer_id'])?$_POST['offer_id']:Authorization::UnsupportedRequest();
+    if (mysqli_num_rows($this->GetRowMultyConditions('ordersoffers',['id','user_id'],[$offer_id,$user->Info->id]))==0) {Authorization::UnsupportedRequest();}
+    if (!$this->Update('ordersoffers',['deleted_at'],[date("Y-m-d H:i:s")],['id'],$offer_id)) {Authorization::UnknownError();}
+        $Responce->status = true;
+        $Responce->Send();
   }
   public function otherorders()
   {
@@ -773,7 +855,7 @@ class user extends DBHelper
     $user = $this->RequireLogin('notifications');
     $res = $this->GetRows("notification","reciever_id",$user->Info->id," AND `deleted_at` is NULL AND `celled`= 0 order by `id` DESC");
     $Responce = new Responce();
-    $Responce->ok = true;
+    $Responce->status = true;
     $Responce->username = "";
     $Responce->userimage = "";
     if(mysqli_num_rows($res)>0){
@@ -811,8 +893,8 @@ class user extends DBHelper
     $Items = [];
     while ($row = mysqli_fetch_assoc($res)) {
       $row['sender'] = new EngineerObject($row['sender_id']);
-      $row['receiver'] = new EngineerObject($row['reciever_id']);
-      $row['order'] = new OrderObject($row['object_id']);
+      // $row['receiver'] = new EngineerObject($row['reciever_id']);
+      // $row['order'] = new OrderObject($row['object_id']);
       $row['timeStemp'] = (strtotime(Date("Y-m-d H:i:s")) - strtotime($row['created_at'])) * 1000;
       $Items[] = $row;
     }
@@ -839,12 +921,28 @@ class user extends DBHelper
     $Responce->item = new UserObject($row);
     $Responce->Send();
   }
+  public function OrderInfo()
+  {
+    $Responce = new Responce();
+    $user = Authorization::Token();
+    $id = isset($_POST['order_id'])&&!empty($_POST['order_id'])?$_POST['order_id']:Authorization::UnsupportedRequest();
+    $res = $this->GetRows("ordersrequests",'id',$id);
+    $Responce->item = new OrderObject(mysqli_fetch_assoc($this->GetRows("ordersrequests",'id',$id)));
+    if ($Responce->item->user_id!=$user->Info->id && $Responce->item->acceptoffer->user_id!=$user->Info->id) {
+      $Responce->item = null;
+    }
+    $user = $this->RequireLogin('info');
+    $Responce->status = true;
+    $Responce->id = $id;
+    $Responce->valid = mysqli_num_rows($res)>0;
+    $Responce->Send();
+  }
   public function login()
   {
     $Responce = new Responce();
     $this->email = $_REQUEST['username'];
     $this->password = Password::Hash($_REQUEST['password']);
-    $res = $this->GetRowMultyConditions('users',['password','email'],[$this->password,$this->email]);
+    $res = $this->GetRowMultyConditions('users',['password','phone'],[$this->password,$this->email]);
     if (mysqli_num_rows($res)==0) {
       $phone = strlen($this->email)==10?substr($this->email,1):$this->email;
       $res = $this->GetRowMultyConditions('users',['password','phone'],[$this->password,$phone]);
@@ -983,6 +1081,13 @@ class sheared extends DBHelper
     $Responce->about = base64_decode((new Settings())->Info->aboutapp);
     $Responce->Send();
   }
+  public function statics()
+  {
+    $Responce = new Responce();
+    $Responce->status = true;
+    $Responce->item = (new Settings())->Info;
+    $Responce->Send();
+  }
   public function reasons()
   {
     $Responce = new Responce();
@@ -1031,9 +1136,9 @@ class sheared extends DBHelper
   public function files($folder = false,$fileName =false,$chat_img=false){
    if (!$folder||!$fileName) {Authorization::UnsupportedRequest();  }
    if(!$chat_img){
-       $path = STORAGE . $folder . DS . $fileName;
+      $path =  STORAGE . $folder . DS . $fileName;
      }else{
-       $path = STORAGE . $folder . DS . $fileName .DS.$chat_img;
+       $path = STORAGE . $folder . DS . $fileName . DS .$chat_img;
     }
     if(file_exists($path)){
        header('Content-type: Image/jpeg');
@@ -1063,49 +1168,19 @@ class sheared extends DBHelper
 
   }
 
-public static function postInfo($id)
+public function postInfo()
 {
-
-  
-$options = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ];
-$con = new PDO('mysql:host=localhost;dbname=doctor_tech', 'root', '', $options);
-
-$sql  = "SELECT 
-
-comments.id as id,
-comments.comment as content,
-comments.created_at,comments.updated_at,
-comments.post_id,
-users.name as u_name,
-users.image as u_image
-
-from comments 
-INNER JOIN users ON comments.user_id = users.id WHERE commnets.post_id = ?";
-
-$stmt = $con->prepare($sql);
-$stmt->execute($id);
-
-if($stmt->rowCount() > 0)
-{
-  $Items = $stmt->fetchAll(PDO::FETCH_OBJ);
-  
-}else
-{
+  $id = isset($_POST['post_id'])&&!empty($_POST['post_id'])?$_POST['post_id']:Authorization::UnsupportedRequest();
   $Items = [];
-}
-
-  /*$Items = mysqli_fetch_assoc($this->GetRows('posts','id',$id));
-  $Items['user'] = mysqli_fetch_assoc($this->GetRows('users','id',$row_2["user_id"]));
-  $Items["comments"] = [];
   $res_2 =   $this->GetRows('comments','post_id',$id," order by `id` DESC");
   while ($row_2 = mysqli_fetch_assoc($res_2)) {
-    $row_2['user'] = mysqli_fetch_assoc($this->GetRows('users','id',$row_2["user_id"]));
-    $Items["comments"][] = $row_2;
+    $user_row = mysqli_fetch_assoc($this->GetRows('users','id',$row_2["user_id"]));
+    $row_2['user'] = ["image"=>$user_row['image'],"id"=>$user_row['id'],"name"=>$user_row["name"]] ;
+    $Items [] = $row_2;
   }
-  // */
   $Responce = new Responce();
   $Responce->status = true;
-  $Responce->items = $Items; // post data table 
+  $Responce->items = $Items;
   $Responce->Send();
 
 }
@@ -1123,7 +1198,7 @@ if($stmt->rowCount() > 0)
      $row["is_like"] =($user->valid)?mysqli_num_rows($this->GetRowMultyConditions('likeposts',['user_id','post_id'],[$user->Info->id,$row["id"]]))>0:false;
      $row["url_file"] = ImagesRoot . $row["file"];
      $row["comments"] = mysqli_num_rows($this->GetRows('comments','post_id',$row["id"]));
-     $row["likes"] =0;// mysqli_num_rows($this->GetRows('postslikes','post_id',$row["id"]));
+     $row["likes"] =  mysqli_num_rows($this->GetRows('likeposts','post_id',$row["id"]));
      $Items[] = $row;
    }
    $Responce = new Responce();
@@ -1158,30 +1233,10 @@ if($stmt->rowCount() > 0)
   {
     $user = Authorization::Token();
     $res = $this->GetTable("categoryproducts");
-    $Items = [];
-    while ($row = mysqli_fetch_assoc($res)) {
-      $row['products'] = [];
-      $res_2 =  $this->GetRows('products','category_id',$row['id']);
-      while ($row_2 = mysqli_fetch_assoc($res_2)) {
-            $row_2['is_evaluate'] = ($user->valid)?mysqli_num_rows($this->GetRowMultyConditions('evaluations',['user_id','product_id'],[$user->Info->id,$row_2["id"]]))>0:false;
-            $row_2['total_evaluate'] = mysqli_num_rows($this->GetRows('evaluations','product_id',$row["id"]));
-            $row_2['evaluation'] = $this->FetchArray($this->GetRowMultyConditions('evaluations',['user_id','product_id'],[$user->Info->id,$row_2["id"]]));
-            $row_2['media'] = mysqli_fetch_assoc($this->GetRows('media','model_id',$row["id"]));
-            $row_2['url_images'] = [
-              ImagesRoot . $row_2['product_image'],
-              ImagesRoot . $row_2['product_image_2'],
-              ImagesRoot . $row_2['product_image_3'],
-              ImagesRoot . $row_2['product_image_4'],
-              ImagesRoot . $row_2['product_image_5'],
-            ];
-            $row['products'][]= $row_2;
-      }
-      $Items[] = $row;
-    }
     $Responce = new Responce();
     $Responce->status = true;
     $Responce->page_count = mysqli_num_rows($res);
-    $Responce->items = $Items;
+    $Responce->items = $this->FetchArray($res);
     $Responce->Send();
   }
   public function problems()
@@ -1249,7 +1304,7 @@ public function GetAllOptions($value='')
   $Responce->PieceType = $this->FetchArray($this->GetTable("offer_piece_type"));
   $Responce->ServiceType = $this->FetchArray($this->GetTable("offer_service_type"));
   $Responce->Garanty = $this->FetchArray($this->GetTable("offer_garanty"));
-  $Responce->Citys = $this->FetchArrayObjects("CityObject",$this->GetTable("towns"));
+  $Responce->Citys = $this->FetchArrayObjects("CityObject",$this->GetRows("towns","hide","0"));
   $Responce->ServiceDescription =  base64_decode((new Settings())->Info->service_description);
   $Responce->Send();
 }
@@ -1287,12 +1342,21 @@ public function GetAllOptions($value='')
                                      $user->Info->location_latitude,$user->Info->location_longitude);
        $notic = $Distance>1?NEW_ORDER_NOTIC . " " .  round($Distance)  . " " . KM_UINT:NEW_ORDER_NOTIC . " " . round($Distance*1000) . " " . M_UINT;
         $MaxDistance = $user->Info->Distance>0?$user->Info->Distance:(new Settings())->Info->Distance;
-       if ($Distance <= $MaxDistance ) {
-         $DBHelper->Inject('notification',['object_id','message','type_id','sender_id','reciever_id','created_at'],
-                                     [$_id,$notic,'1',$Order_object->user_id,$user->Info->id,Date("Y-m-d H:i:s")]);
+       if ($Distance <= $MaxDistance  ) {
+         $DBHelper->Inject('notification',['object_id','message_id','type_id','sender_id','reciever_id','created_at'],
+                                     [$_id,169,'1',$Order_object->user_id,$user->Info->id,Date("Y-m-d H:i:s")]);
+         $user->SendNotification("طلب صيانة جيد",$notic);
        }
      }
   }
+  static function NoticAllAdmins(){
+    $DBHelper = new DBHelper();
+    $res = $DBHelper->GetRows("users","role_id","1");
+    while ($row = mysqli_fetch_assoc($res)){
+      $user = new User($row['id']);
+        $user->SendNotification("طلب إنضمام جديد","تم استقبال طلب انضمام جديد من طرف " . $user->Info->name);
+      }
+    }
 }
 class Password {static function Hash($pass){return sha1($pass);}}
 class Responce{  function Send(){header('Content-type: text/json');die(json_encode($this));}}
@@ -1309,7 +1373,7 @@ class Authorization {
     {
       $Responce = new Responce();
       $Responce->status = false;
-      $Responce->message = "الرجاء تعبئة جميع الخانات الازمة";
+      $Responce->messageid = 3;
       $Responce->Send();
     }
     static function Key(){
@@ -1320,36 +1384,36 @@ class Authorization {
     static function AuthoFail()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1000;
-      $Error->message = "App authenticator error . Your application is not registered or your autho key is expired ";
+      $Error->messageid = 212;
       $Error->support = Support;
       $Error->Send();
     }
     static function UnsupportedRequest()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1001;
-      $Error->message = "Unsupported Request Error . the Request you are trying to make is not Allowed or Unsupported . See more details on project seport link . ";
+      $Error->messageid = 213;
       $Error->support = Support;
       $Error->Send();
     }
     static function UserAuthoFail()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1002;
-      $Error->message = "User Authorization error";
+      $Error->messageid = 214;
       $Error->support = Support;
       $Error->Send();
     }
     static function UnsuccessfulRequest()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1003;
-      $Error->message = "Unsuccessful Request error . You have sent data or params less  then you should";
+      $Error->messageid = 215;
       $Error->support = Support;
       $Error->Send();
     }
@@ -1357,7 +1421,7 @@ class Authorization {
     static function UnsuccessfulOperation()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1004;
       $Error->message = "Unsuccessful Operation , please check your inputs . you can get help following the support link";
       $Error->support = Support;
@@ -1366,7 +1430,7 @@ class Authorization {
     static function UnknownError()
     {
       $Error = new Responce();
-      $Error->ok = false;
+      $Error->status = false;
       $Error->code = 1005;
       $Error->message = "Unknown Error Error . Please Connect Us as Soon as possible";
       $Error->support = Support;
@@ -1419,34 +1483,37 @@ class Orders extends DBHelper
     }else{
       $res = $this->JoindTables("ordersoffers","ordersrequests",["*"],[],"id","orderoffer_id","user_id",$this->user->Info->id," AND `ordersrequests`.`deleted_at` is null  order by `id` DESC");
     }
-    $Items = [];
-    $this->Count = mysqli_num_rows($res);
-    //$MaxDistance = $user->Info->Distance>0?$user->Info->Distance:(new Settings())->Info->Distance;
-    while ($row = mysqli_fetch_assoc($res)) {
-      $Order = new OrderObject($row);
-      //if ($Order->distance <= $MaxDistance or $this->user->Info->type=="user" ) {
-       $Items[] = $Order;
-    //  }
-    }
     $Responce = new Responce();
     $Responce->status = true;
     $Responce->page_count = 0;
-    $Responce->items = $Items;
-      Logger::O($Responce);
+    $Responce->items = $this->FetchArrayObjects("OrderObject",$res);
     $Responce->Send();
   }
   public function GetOthers()
   {
+    $page_indx  = $_POST['pages'] ?? 1;
+    $Page_count = (new Settings())->Info->pages;
+    $start_from = $Page_count  * ($page_indx - 1);
+    $end_At = $Page_count;
     $Responce = new Responce();
-    $res = $this->GetRowsNot("ordersrequests",'user_id',$this->user->Info->id," AND `status` = 'WAITING' AND `deleted_at` is Null order by `id` DESC");
+    $res = $this->GetRowsNot("ordersrequests",'user_id',$this->user->Info->id," AND `status` = 'WAITING' AND `deleted_at` is Null order by `id` DESC  LIMIT " . $start_from . "," . $end_At);
     $this->Count = mysqli_num_rows($res);
     $Items = [];
     $Responce->page_count = mysqli_num_rows($res);
     $Responce->status = true;
-    $Responce->page = 1;
-    $Responce->items = $this->FetchArrayObjects("OrderObject",$res);
+    $Responce->page = $page_indx;
+    $Responce->Page_count = $Page_count;
+    $Responce->items = [];
+    $tmp_items  = $this->FetchArrayObjects("OrderObject",$res);
+    for ($i=0; $i < count($tmp_items); $i++) {
+       $Order_object = $tmp_items[$i];
+       $Distance = $this->user->Distance($Order_object->location_latitude,$Order_object->location_longitude,$this->user->Info->location_latitude,$this->user->Info->location_longitude);
+       $MaxDistance = $this->user->Info->Distance>0?$this->user->Info->Distance:(new Settings())->Info->Distance;
+       if ($Distance <= $MaxDistance  ) {
+         $Responce->items[] = $Order_object;
+       }
+    }
     $Responce->Send();
-
   }
 }
 
@@ -1456,10 +1523,9 @@ class Orders extends DBHelper
 class JoinRequest extends DBHelper
 {
 
-  function __construct($data)
+  function __construct($user)
   {
 
-    $user = Authorization::Token();
     $Responce = new Responce();
     if (mysqli_num_rows($this->GetRows("joining_requests","user_id",$user->Info->id))>0) {
       $Responce->status = true;
@@ -1488,15 +1554,29 @@ class JoinRequest extends DBHelper
     $this->Is_home_servce = isset($_POST['Is_home_servce'])?$_POST['Is_home_servce']:$this->FillAllBlanks();
     $this->Is_Delvery_servce = isset($_POST['Is_Delvery_servce'])?$_POST['Is_Delvery_servce']:$this->FillAllBlanks();
     $this->Is_Company = isset($_POST['Is_Company'])?$_POST['Is_Company']:$this->FillAllBlanks();
-    $Face_Image = isset($_POST['Face_Image_file'])&&!empty($_POST['Face_Image_file'])?$_POST['Face_Image_file']:$this->FillAllBlanks();
-    $ID_Image = isset($_POST['ID_Image_file'])&&!empty($_POST['ID_Image_file'])?$_POST['ID_Image_file']:$this->FillAllBlanks();
-    $CV_Image = isset($_POST['CV_File_file'])&&!empty($_POST['CV_File_file'])?$_POST['CV_File_file']:$this->FillAllBlanks();
+
+    $Face_Image =  !empty($_FILES['Face_Image_file']['name'])?$_FILES['Face_Image_file']:$this->FillAllBlanks();
+    $ID_Image =  !empty($_FILES['ID_Image_file']['name'])?$_FILES['ID_Image_file']:$this->FillAllBlanks();
+    $CV_File =  !empty($_FILES['CV_File_file']['name'])?$_FILES['CV_File_file']:$this->FillAllBlanks();
+
     $this->Face_Image_name = uniqid() . '.jpg';
-    file_put_contents(PRIVET_PATH . $this->Face_Image_name ,base64_decode($Face_Image));
     $this->ID_Image_name = uniqid() . '.jpg';
-    file_put_contents(PRIVET_PATH . $this->ID_Image_name ,base64_decode($ID_Image));
     $this->CV_Image_name = uniqid() . '.jpg';
-    file_put_contents(PRIVET_PATH . $this->CV_Image_name ,base64_decode($CV_Image));
+    if ($this->UploadImage($this->Face_Image_name,$Face_Image) != 3) {
+      $Responce->status = false;
+      $Responce->message = "حدث خطأ في رفع الصورة الشخصية . تأكد من انك ترفع الصيغة الصحيحة";
+      $Responce->Send();
+    }
+    if ($this->UploadImage($this->ID_Image_name,$ID_Image) != 3) {
+      $Responce->status = false;
+      $Responce->message = "حدث خطأ في رفع ملف الهوية . تأكد من ان الملف صالح";
+      $Responce->Send();
+    }
+    if ($this->UploadImage($this->CV_Image_name,$CV_File) != 3) {
+      $Responce->status = false;
+      $Responce->message = "حدثت مشكلة في رفع السيرة الذاتية . تأكد من اختيارك للملف الصحيح";
+      $Responce->Send();
+    }
     $results = $this->Inject('joining_requests',["first_name","father_name","g_father_name","family_name","birth_date","identity",
     "principal_phone","phone_1","phone_2","phone_3","phone_4","work_place","offering_service","photo","cv","personel_photo","status","user_id",
     "Is_one_person","Is_Car_shop","Is_home_servce","Is_Delvery_servce","Is_Company","town_id","city_id"],
@@ -1505,13 +1585,13 @@ class JoinRequest extends DBHelper
                                       $this->Extra_Phone_4,$this->Work_Place,$this->Is_WorkShop,$this->ID_Image_name,$this->CV_Image_name,$this->Face_Image_name,'0',
                                       $user->Info->id,$this->Is_one_person,$this->Is_Car_shop,$this->Is_home_servce,$this->Is_Delvery_servce,$this->Is_Company,$this->town_id,$this->city_id]) &&
      $this->update('users',['location_latitude','location_longitude'],[$this->user_lat,$this->user_lang],['id'],$user->Info->id);
-
+     Notification::NoticAllAdmins();
       if (!$results) {
         $Responce->status = false;
-        $Responce->message = 3101;
+        $Responce->message = "حدث خطأ في ارسال الطلب يرجى التوصال معنا لحل المشكلة";
         $Responce->Send();
       }
-      $Responce->message = 3100;
+      $Responce->message = "تم ارسال طلب بنجاح . سيصلك اشعار بعد قبول الطلب من طرف الادارة";
       $Responce->status = true;
       $Responce->Send();
   }
@@ -1553,9 +1633,7 @@ class OrderObject extends DBHelper {
         $this->acceptoffer = mysqli_fetch_assoc($this->GetRows('ordersoffers','id',$row['orderoffer_id']));
         $this->Images = $this->FetchArray($this->GetRows('images','object',$row['id']));
         $this->type_mobile = mysqli_fetch_assoc($this->GetRows('typemobiles','id',$row['type_mobile_id']));
-        $this->offers =  $this->FetchArrayObjects('OfferObject',$this->GetRows('ordersoffers','order_id',$row['id']," order by `id` DESC"));
-        $myoffer = $this->GetRows('ordersoffers','order_id',$row['id']," and `user_id` = " . $U_Me->Info->id);
-        $this->MyOffer = mysqli_num_rows($myoffer)>0?new OfferObject(mysqli_fetch_assoc($myoffer)):null;
+        $this->offers =  $this->FetchArrayObjects('OfferObject',$this->GetRows('ordersoffers','order_id',$row['id']," AND `deleted_at` is null order by `id` DESC"));
         $this->note = $row['note'];
         $this->town = mysqli_fetch_assoc($this->GetRows('towns','id',$row['town']));
         $this->city = mysqli_fetch_assoc($this->GetRows('cities','id',$row['city']));
@@ -1566,8 +1644,13 @@ class OrderObject extends DBHelper {
         $this->engineer =  $this->acceptoffer->engineer;
         $this->timeStemp =  (strtotime(Date("Y-m-d H:i:s")) - strtotime($row['created_at'])) * 1000;
         $this->IsOffered = mysqli_num_rows($this->GetRowMultyConditions('ordersoffers',['user_id','order_id'],[$U_Me->Info->id,$row['id']]))>0;
-        $this->distance =  $U_Me->Distance($this->location_latitude,$this->location_longitude,
-                                           $U_Me->Info->location_latitude,$U_Me->Info->location_longitude);
+        $this->distance =  $U_Me->Distance($this->location_latitude,$this->location_longitude,$U_Me->Info->location_latitude,$U_Me->Info->location_longitude);
+        $this->MyOffers = $this->FetchArrayObjects('OfferObject',$this->GetRows('ordersoffers','order_id',$row['id']," AND `deleted_at` is null and `user_id` = " . $U_Me->Info->id));
+        if ($this->user->id==$U_Me->Info->id) {
+           $this->OrderOffersCount = mysqli_num_rows($this->GetRows("ordersoffers","order_id",$row['id']," AND `deleted_at` is null"));
+        }
+
+
   }
 }
 class OfferObject extends DBHelper {
@@ -1617,6 +1700,7 @@ class UserObject extends DBHelper {
       $this->type = $row['type'];
       $this->image = $row['image'];
       $this->approved = $row['approved'];
+      $this->balance = $this->GetSUM("transactions","amount","user_id",$row['id']);
       $this->completed = $row['completed'];
       $this->town = mysqli_fetch_assoc($this->GetRows('towns','id',(mysqli_fetch_assoc($this->GetRows('joining_requests','user_id',$row['id']))['town_id'])));
       $this->city = mysqli_fetch_assoc($this->GetRows('cities','id',(mysqli_fetch_assoc($this->GetRows('joining_requests','user_id',$row['id']))['city_id'])));
@@ -1629,7 +1713,7 @@ class UserObject extends DBHelper {
       $this->Purchases = mysqli_num_rows($this->GetRows("payments","user_id",$this->id));
       $this->Orders = mysqli_num_rows($this->GetRows("ordersrequests","user_id",$this->id));
       $this->Dealings = $this->GetDealingsCount();
-      $this->url_image = Root . 'api/v2/sheared/images/' . $row['image'];
+      $this->url_image = Root . 'index.php?url=api/v2/sheared/images/' . $row['image'];
   }
   public function GetDealingsCount()
   {
@@ -1665,7 +1749,7 @@ class EngineerObject extends DBHelper {
       $count = mysqli_num_rows($res);
       $this->rate = $count>0?$this->rate/$count:0;
       $this->rate = round($this->rate * 100)/100;
-      $this->url_image = Root . 'api/v2/sheared/images/' . $row['image'];
+      $this->url_image = Root . 'index.php?url=api/v2/sheared/images/' . $row['image'];
   }
 }
 class ProductObject extends DBHelper {
@@ -1714,14 +1798,14 @@ class TransactionObject  extends DBHelper
     $this->cut_from = $row['cut_from'];
     $this->transaction_id = $row['transaction_id'];
     $this->delated_at = $row['delated_at'];
-    $this->created_at = date("Y-m-d", strtotime($row['created_at']));
+    $this->created_at =  $row['created_at'];
+    $this->order_id =  mysqli_fetch_assoc($this->GetRows("ordersrequests","orderoffer_id",$row['offer_id']))['id'];
   }
 }
 class PhoneTypeObject extends DBHelper
 {
   function __construct($row)
   {
-
     $this->id = $row['id'];
     $this->Text = $row['brand'];
     $this->Types = $this->FetchArray($this->GetRows("modelmobiles","type_id",$row['id']));
@@ -1738,3 +1822,838 @@ class CityObject extends DBHelper
 
   }
 }
+
+$GLOBALS['DB'] = new \mysqli(env('DB_HOST'),env('DB_USER'),env('DB_PASS'),env('DB_NAME'));
+mysqli_set_charset($GLOBALS['DB'],"utf8");
+
+class DBHelper {
+public function GetTable($TableName,$extra ="")
+{
+   $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    return $DB->query("SELECT * FROM  `$TableName`" . $extra);
+     $sql->execute();
+    return $sql->get_result();
+}
+
+public function hashPassword($pass){
+    return sha1($pass);
+}
+public function JsonHeader($a)
+{
+   header('Content-Type: text/json');
+   die(json_encode($a));
+}
+public function IsImage($Image)
+{
+return exif_imagetype($Image);
+}
+public function Resize($src, $desired_width, $destination=""){
+  list($Width, $height, $imageFileType, $attr) = getimagesize($src);
+
+	/* read the source image */
+  if($imageFileType == IMAGETYPE_JPEG ){
+    $source_image = imagecreatefromjpeg($src);
+  }else if($imageFileType== IMAGETYPE_PNG){
+    $source_image = imagecreatefrompng($src);
+  }else if($imageFileType== IMAGETYPE_GIF ){
+    $source_image = imagecreatefromgif($src);
+  }
+	$width = imagesx($source_image);
+	$height = imagesy($source_image);
+
+	/* find the "desired height" of this thumbnail, relative to the desired width  */
+	$desired_height = floor($height * ($desired_width / $width));
+
+	/* create a new, "virtual" image */
+	$virtual_image = imagecreatetruecolor($desired_width, $desired_height);
+
+	/* copy source image at a resized size */
+	imagecopyresampled($virtual_image, $source_image, 0, 0, 0, 0, $desired_width, $desired_height, $width, $height);
+
+	/* create the physical thumbnail image to its destination */
+  $destination = !empty($destination)?$destination:$src;
+	imagejpeg($virtual_image, $destination);
+}
+public function crop($src, array $rect)
+{
+    $dest = imagecreatetruecolor($rect['width'], $rect['height']);
+    imagecopy(
+        $dest,
+        $src,
+        0,
+        0,
+        $rect['x'],
+        $rect['y'],
+        $rect['width'],
+        $rect['height']
+    );
+
+    return $dest;
+}
+public function GetImgeType($path)
+{
+  $arr = [IMAGETYPE_GIF,
+         IMAGETYPE_JPEG,
+         IMAGETYPE_PNG,
+         IMAGETYPE_SWF,
+         IMAGETYPE_PSD,
+         IMAGETYPE_BMP,
+         IMAGETYPE_TIFF_II,
+         IMAGETYPE_TIFF_MM,
+         IMAGETYPE_JPC,
+         IMAGETYPE_JP2,
+         IMAGETYPE_JPX,
+         IMAGETYPE_JB2,
+         IMAGETYPE_SWC,
+         IMAGETYPE_IFF,
+         IMAGETYPE_WBMP,
+         IMAGETYPE_XBM,
+         IMAGETYPE_ICO,
+         IMAGETYPE_WEBP];
+   $results = exif_imagetype($path);
+   return $arr[$results-1];
+}
+public function CutImage($target_file,$w=-1,$h=-1)
+{
+  try{
+  list($Width, $height, $imageFileType, $attr) = getimagesize($target_file);
+      if ($w==-1 && $h==-1) {
+         if ($Width>$height) {
+           $w=$height;
+           $h=$height;
+         }else {
+           $w=$Width;
+           $h=$Width;
+         }
+      }
+  if($imageFileType == IMAGETYPE_JPEG ){
+    $im = imagecreatefromjpeg($target_file);
+  }else if($imageFileType== IMAGETYPE_PNG){
+    $im = imagecreatefrompng($target_file);
+  }else if($imageFileType== IMAGETYPE_GIF ){
+    $im = imagecreatefromgif($target_file);
+  }
+  $im2 = $this->crop($im, ['x' => 0, 'y' => 0, 'width' => $w,
+   'height' => $h]);
+  if ($im2 !== FALSE) {
+   return imagejpeg($im2, $target_file);
+ }else {
+   return false;
+ }
+ }catch(Exception $e){
+   return false;
+ }
+}
+public function JoindTablesNoRepeat($KeysTable,$SearchTable,$CulumnsKeysTable,$JoinKey,$JoinValue,$key,$value,$Extra = "")
+{
+  //DISTINCT
+      $DB = $GLOBALS['DB'];
+      $KeysTable  = mysqli_escape_string($DB,strtolower($KeysTable));
+      $SearchTable  = mysqli_escape_string($DB,strtolower($SearchTable));
+      $JoinKey  = mysqli_escape_string($DB,$JoinKey);
+      $JoinValue  = mysqli_escape_string($DB,$JoinValue);
+      $key  = mysqli_escape_string($DB,$key);
+      $value  = mysqli_escape_string($DB,$value);
+      $culomns = '';
+      for ($i=0; $i < count($CulumnsKeysTable); $i++) {
+          $ThisClumnName = mysqli_escape_string($DB,$CulumnsKeysTable[$i]);
+          if($i == (count($CulumnsKeysTable)-1)){
+            if(!empty($culomns) && $i == 0){
+              $culomns .= ", `$KeysTable`.`$ThisClumnName` ";
+            }else{
+              $culomns .= " `$KeysTable`.`$ThisClumnName` ";
+            }
+          }else if(!empty($culomns) && $i == 0){
+            $culomns .= " , `$KeysTable`.`$ThisClumnName` ";
+          }else {
+            $culomns .= " `$KeysTable`.`$ThisClumnName` , ";
+          }
+      }
+      $cmd = "SELECT DISTINCT $culomns FROM `$SearchTable` INNER
+      JOIN `$KeysTable` ON `$KeysTable`.`$JoinKey` =  `$SearchTable`.`$JoinValue` WHERE  `$KeysTable`.`$key` =  '$value'" . $Extra;
+      $cmd = str_replace("`*`","*",$cmd);
+       return $DB->query($cmd);
+      $sql->execute();
+      return  $sql->get_result();
+}
+public function JoindTables($KeysTable,$SearchTable,$CulumnsSerachTable,$CulumnsKeysTable,$JoinKey,$JoinValue,$key,$value,$Extra = "")
+{
+    $DB = $GLOBALS['DB'];
+  $KeysTable  = mysqli_escape_string($DB,strtolower($KeysTable));
+  $SearchTable  = mysqli_escape_string($DB,strtolower($SearchTable));
+  $JoinKey  = mysqli_escape_string($DB,$JoinKey);
+  $JoinValue  = mysqli_escape_string($DB,$JoinValue);
+  $key  = mysqli_escape_string($DB,$key);
+  $value  = mysqli_escape_string($DB,$value);
+  $culomns = '';
+  for ($i=0; $i < count($CulumnsSerachTable); $i++) {
+        $ThisClumnName = mysqli_escape_string($DB,$CulumnsSerachTable[$i]);
+        if($i ==(count($CulumnsSerachTable)-1)){
+        $culomns .= " `$SearchTable`.`$ThisClumnName` ";
+        }else {
+        $culomns .= " `$SearchTable`.`$ThisClumnName` , ";
+        }
+  }
+  for ($i=0; $i < count($CulumnsKeysTable); $i++) {
+        $ThisClumnName = mysqli_escape_string($DB,$CulumnsKeysTable[$i]);
+        if($i == (count($CulumnsKeysTable)-1)){
+          if(!empty($culomns) && $i == 0){
+            $culomns .= ", `$KeysTable`.`$ThisClumnName` ";
+          }else{
+            $culomns .= " `$KeysTable`.`$ThisClumnName` ";
+          }
+        }else if(!empty($culomns) && $i == 0){
+          $culomns .= " , `$KeysTable`.`$ThisClumnName` ";
+        }else {
+          $culomns .= " `$KeysTable`.`$ThisClumnName` , ";
+        }
+  }
+  $cmd = "SELECT $culomns FROM `$SearchTable` INNER
+    JOIN `$KeysTable` ON `$KeysTable`.`$JoinKey` =  `$SearchTable`.`$JoinValue` WHERE  `$KeysTable`.`$key` =  '$value'" . $Extra;
+  $cmd = str_replace("`*`","*",$cmd);
+  return $DB->query($cmd);
+  $sql->execute();
+  return  $sql->get_result();
+}
+public function GetCountAll($TableName,$ClumnName,$Value,$Extra='')
+{
+  $TableName = strtolower($TableName);
+  $DB = $GLOBALS['DB'];
+  $flags ='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  $Value =mysqli_escape_string($DB,$Value);
+  $Extra =mysqli_escape_string($DB,$Extra);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $flags .=" `$ThisClumnName` = '$Value' ";
+        }else {
+        $flags .=" `$ThisClumnName` = '$Value' or ";
+        }
+  }
+  return $DB->query("SELECT * FROM `$TableName` WHERE $flags " . $Extra);
+  $sql->execute();
+  return mysqli_num_rows($sql->get_result());
+}
+public function go_to($url){header('location: ' . $url );die();}
+public function GetCountNoRepeat($TableName,$ClumnName,$Value,$NoRepeatClumnName,$Extra='')
+{
+  $TableName = strtolower($TableName);
+  $DB = $GLOBALS['DB'];
+  $flags ='';
+  $NoRepeat='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  $Value =mysqli_escape_string($DB,$Value);
+  $Extra =mysqli_escape_string($DB,$Extra);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $flags .=" `$ThisClumnName` = '$Value' ";
+        }else {
+        $flags .=" `$ThisClumnName` = '$Value' or ";
+        }
+  }
+  for ($i=0; $i < count($NoRepeatClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$NoRepeatClumnName[$i]);
+        if($i ==(count($NoRepeatClumnName)-1)){
+        $NoRepeat .=" `$ThisClumnName` ";
+        }else {
+        $NoRepeat .=" `$ThisClumnName` , ";
+        }
+  }                        //SELECT  DISTINCT  $NoRepeat FROM purches WHERE Seller = 2
+  return $DB->query("SELECT  DISTINCT  $NoRepeat FROM `$TableName` WHERE $flags " . $Extra);
+  $sql->execute();
+ return mysqli_num_rows($sql->get_result());
+}
+public function GetRowsNoRepeat($TableName,$ClumnName,$Value,$NoRepeatClumnName,$Extra='')
+{
+  $TableName = strtolower($TableName);
+  $DB = $GLOBALS['DB'];
+  $flags ='';
+  $NoRepeat='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  $Value =mysqli_escape_string($DB,$Value);
+  $Extra =mysqli_escape_string($DB,$Extra);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $flags .=" `$ThisClumnName` = '$Value' ";
+        }else {
+        $flags .=" `$ThisClumnName` = '$Value' or ";
+        }
+  }
+  for ($i=0; $i < count($NoRepeatClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$NoRepeatClumnName[$i]);
+        if($i ==(count($NoRepeatClumnName)-1)){
+        $NoRepeat .=" `$ThisClumnName` ";
+        }else {
+        $NoRepeat .=" `$ThisClumnName` , ";
+        }
+  }
+  return $DB->query(" SELECT  * FROM `$TableName` WHERE $flags GROUP BY  $NoRepeat" . $Extra);
+  $sql->execute();
+ return  $sql->get_result();
+}
+public function FetchArray($res)
+{
+  $data = [];
+  while ($row = mysqli_fetch_assoc($res)) {$data[] = $row;}
+  return $data;
+}
+public function FetchArrayKeys($res,$key)
+{
+  $data = [];
+  while ($row = mysqli_fetch_assoc($res)) {$data[] = $row[$key];}
+  return $data;
+}
+public function FetchArrayObjects($className,$res)
+{
+  $data = [];
+  while ($row = mysqli_fetch_assoc($res)) {
+    $object = 'Controllers\\Api\\'. $className;
+    $data[] = new $object($row);
+  
+  }
+  return $data;
+}
+public function UploadImage($Path,$File,$Limit = 0,$CutWidth = 0 ,$CutHieght = 0,$aspact = 0)
+{
+  $target_file = $Path  ; //basename($_FILES["fileToUpload"]["name"]);
+  $imageFileType = strtolower(pathinfo($File['name'],PATHINFO_EXTENSION));
+  $check = getimagesize($File["tmp_name"]);
+  if ($File["size"] > $Limit && $Limit > 0) {
+    return 0;
+  }
+  if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ) {
+    return 1;
+   }
+    if (move_uploaded_file($File["tmp_name"], $target_file)) {
+      if(!$this->IsImage($target_file)){
+        unlink($target_file);
+        return 2;
+      }
+      if ($CutWidth != 0) {
+          if ($aspact != 0) {
+            $r = $this->CutImage($target_file,-1,-1,$imageFileType);
+            if (!$r) {return 5;}
+            $this->Resize($target_file,$CutWidth);
+          }else {
+            $r = $this->CutImage($target_file,$CutWidth,$CutHieght,$imageFileType);
+            if (!$r) {return 5;}
+          }
+      }
+      return 3;
+    } else {
+      return 4;
+    }
+
+}
+public function VideoUploader($Video,$id){
+  $target_dir = $GLOBALS['VideoRoot'];
+  $target_file = $target_dir . 'video_' . $id . '_' . 0 . '_.mp4';
+  $uploadOk = 1;
+  $VideoFileType = pathinfo($Video["name"],PATHINFO_EXTENSION);
+  $check = mime_content_type($Video["tmp_name"]);
+  if(!strstr($check, "video/")){
+  return $this->Translate(210);
+  }
+  if ( $GLOBALS['MaxForVideo']>0){
+  if($Video["size"] > $GLOBALS['MaxForVideo'] ) {
+  return $this->Translate(211);
+  }
+  }
+  if($VideoFileType != "mp4" && $VideoFileType != "MP4" ) {
+  return $this->Translate(212);
+  }
+  if (move_uploaded_file($Video["tmp_name"], $target_file)) {
+  return 1;
+  } else {
+  return $this->Translate(23);
+  }
+}
+public function GetSUM($TableName,$SumKey,$ClumnName,$Value,$Extra="")
+{
+   $TableName = strtolower($TableName);
+   $DB = $GLOBALS['DB'];
+   $TableName =mysqli_escape_string($DB,$TableName);
+   $ClumnName =mysqli_escape_string($DB,$ClumnName);
+   $SumKey =mysqli_escape_string($DB,$SumKey);
+   $Value =mysqli_escape_string($DB,$Value);
+   $res = $DB->query("SELECT sum(`$SumKey`) FROM `$TableName` WHERE `$ClumnName` = '$Value' " . $Extra );
+   $row = mysqli_fetch_row($res);
+   return isset($row[0])?$row[0]:0.00;
+}
+public function GetRows($TableName,$ClumnName,$Value,$Extra="")
+{
+   $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $ClumnName =mysqli_escape_string($DB,$ClumnName);
+    $Value =mysqli_escape_string($DB,$Value);
+    return $DB->query("SELECT * FROM `$TableName` WHERE `$ClumnName` = '$Value' " . $Extra );
+    $sql->execute();
+     return $sql->get_result();
+}
+public function GetRowsNot($TableName,$ClumnName,$Value,$Extra="")
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $ClumnName =mysqli_escape_string($DB,$ClumnName);
+    $Value =mysqli_escape_string($DB,$Value);
+    return $DB->query("SELECT * FROM `$TableName` WHERE `$ClumnName` != '$Value' " . $Extra );
+     $sql->execute();
+     return $sql->get_result();
+}
+public function GetRowsCostumData($TableName,$ClumnName,$Value,$Data)
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $ClumnName =mysqli_escape_string($DB,$ClumnName);
+    $Value =mysqli_escape_string($DB,$Value);
+    $D_t="";
+    for ($i=0; $i < count($Data); $i++) {
+          $ThisClumnName =mysqli_escape_string($DB,$Data[$i]);
+          if($i ==(count($Data)-1)){
+          $D_t .=" `$ThisClumnName`   ";
+          }else {
+          $D_t .=" `$ThisClumnName` , ";
+          }
+    }
+    return $DB->query("SELECT $D_t FROM `$TableName` WHERE `$ClumnName` = '$Value' ");
+   $sql->execute();
+   return $sql->get_result();
+}
+public function GetTableCostumData($TableName,$Data,$Extra ='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $D_t="";
+    for ($i=0; $i < count($Data); $i++) {
+          $ThisClumnName =mysqli_escape_string($DB,$Data[$i]);
+          if($i ==(count($Data)-1)){
+          $D_t .=" `$ThisClumnName`   ";
+          }else {
+          $D_t .=" `$ThisClumnName` , ";
+          }
+    }
+     return $DB->query("SELECT $D_t FROM `$TableName` " . $Extra);
+     $sql->execute();
+   return $sql->get_result();
+}
+public function LikeRowMultyFlags($TableName,$ClumnName,$Value,$Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $flags ='(';
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $Value =mysqli_escape_string($DB,$Value);
+    for ($i=0; $i < count($ClumnName); $i++) {
+          $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+          if($i ==(count($ClumnName)-1)){
+          $flags .=" `$ThisClumnName` like '%$Value%' )";
+          }else {
+          $flags .=" `$ThisClumnName` = '%$Value%' or ";
+          }
+    }
+    return $DB->query("SELECT * FROM `$TableName` WHERE $flags " . $Extra);
+    $sql->execute();
+   return $sql->get_result();
+}
+public function GetRowMultyFlags($TableName,$ClumnName,$Value,$Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $flags ='(';
+    $TableName =mysqli_escape_string($DB,$TableName);
+    $Value =mysqli_escape_string($DB,$Value);
+    for ($i=0; $i < count($ClumnName); $i++) {
+          $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+          if($i ==(count($ClumnName)-1)){
+          $flags .=" `$ThisClumnName` = '$Value' )";
+          }else {
+          $flags .=" `$ThisClumnName` = '$Value' or ";
+          }
+    }
+    return $DB->query("SELECT * FROM `$TableName` WHERE $flags " . $Extra);
+    $sql->execute();
+   return $sql->get_result();
+}
+public function GetLastID($TableName)
+{  $DB = $GLOBALS['DB'];
+    return $DB->query("SELECT `id` FROM `$TableName` ORDER BY `id` DESC LIMIT 1" );
+    $sql->execute();
+    return mysqli_fetch_assoc($sql->get_result())['id'];
+}
+public function GetRowMultyConditions($TableName,$ClumnName,$Value,$Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $flags ='';
+    $TableName =mysqli_escape_string($DB,$TableName);
+    for ($i=0; $i < count($ClumnName); $i++) {
+      $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+      $ThisValue =mysqli_escape_string($DB,$Value[$i]);
+          if($i ==(count($ClumnName)-1)){
+          $flags .=" `$ThisClumnName` = '$ThisValue' ";
+          }else {
+          $flags .=" `$ThisClumnName` = '$ThisValue' and ";
+          }
+    }
+    $cmd = "SELECT * FROM `$TableName` WHERE $flags " . $Extra;
+    return $DB->query($cmd);
+    $sql->execute();
+   return $sql->get_result();
+}
+public function GetRowMultyConditionsAndFlags($TableName,$ClumnName,$Value,$Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+    $flags ='';
+    $TableName =mysqli_escape_string($DB,$TableName);
+
+    for ($k=0; $k <  count($ClumnName); $k++) {
+        $Culs = $ClumnName[$k];
+        $Vals = $Value[$k];
+        $flags .= "(" ;
+        for ($i=0; $i < count($Culs); $i++) {
+          $ThisClumnName = mysqli_escape_string($DB,$Culs[$i]);
+          $ThisValue =mysqli_escape_string($DB,$Vals[$i]);
+              if($i ==(count($ClumnName)-1)){
+              $flags .=" `$ThisClumnName` = '$ThisValue' ";
+              }else {
+              $flags .=" `$ThisClumnName` = '$ThisValue' and ";
+              }
+        }
+        $flags .= ")" ;
+        if ($k < count($ClumnName)-1) {
+           $flags .= " OR " ;
+        }
+    }
+
+
+    $cmd = "SELECT * FROM `$TableName` WHERE ($flags) " . $Extra;
+    return $DB->query($cmd);
+    $sql->execute();
+   return $sql->get_result();
+}
+public function Inject($TableName,$ClumnName,$Value,$returnId = false)
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+  $Culs = '(';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $Culs .=" `$ThisClumnName` ";
+        }else {
+        $Culs .=" `$ThisClumnName` , ";
+        }
+  }
+  $Culs .= ')';
+  $Vals = '(';
+  for ($i=0; $i < count($Value); $i++) {
+        $ThisValue =mysqli_escape_string($DB,$Value[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $Vals .=" '$ThisValue' ";
+        }else {
+        $Vals .=" '$ThisValue' , ";
+        }
+  }
+  $Vals .= ')';
+   if($returnId){
+    $DB->query("INSERT INTO `$TableName` $Culs Values $Vals ");
+    return $DB->insert_id;
+  }else{
+    return $DB->query("INSERT INTO `$TableName` $Culs Values $Vals ");
+  }
+}
+public function DeleteRow($TableName,$ClumnName,$Value)
+{
+  $TableName = strtolower($TableName);
+   $DB = $GLOBALS['DB'];
+$flags='';
+   for ($i=0; $i < count($ClumnName); $i++) {
+         $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+         if($i ==(count($ClumnName)-1)){
+         $flags .=" `$ThisClumnName` = '$Value' ";
+         }else {
+         $flags .=" `$ThisClumnName` = '$Value' or ";
+         }
+   }
+   return $DB->query("DELETE FROM  `$TableName`   WHERE $flags ");
+   return  $sql->execute();
+}
+public function DeleteRowCondetions($TableName,$ClumnName,$Value,$ClumnCondetion,$ValueCondetion)
+{
+  $TableName = strtolower($TableName);
+   $DB = $GLOBALS['DB'];
+$flags='';
+   for ($i=0; $i < count($ClumnName); $i++) {
+         $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+         if($i ==(count($ClumnName)-1)){
+         $flags .=" `$ThisClumnName` = '$Value' ";
+         }else {
+         $flags .=" `$ThisClumnName` = '$Value' or ";
+         }
+   }
+$flags.='And';
+   for ($i=0; $i < count($ClumnCondetion); $i++) {
+         $ThisClumnName =mysqli_escape_string($DB,$ClumnCondetion[$i]);
+         if($i ==(count($ClumnCondetion)-1)){
+         $flags .=" `$ThisClumnName` = '$ValueCondetion' ";
+         }else {
+         $flags .=" `$ThisClumnName` = '$ValueCondetion' or ";
+         }
+   }
+
+   return $DB->query("DELETE FROM  `$TableName`   WHERE $flags ");
+   dei("DELETE FROM  `$TableName`   WHERE $flags ");
+   return  $sql->execute();
+}
+public function DeleteRowMultyCondetions($TableName,$ClumnName,$Value)
+{
+  $TableName = strtolower($TableName);
+   $DB = $GLOBALS['DB'];
+$flags='';
+   for ($i=0; $i < count($ClumnName); $i++) {
+         $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+         $ThisValuee =mysqli_escape_string($DB,$Value[$i]);
+         if($i ==(count($ClumnName)-1)){
+         $flags .=" `$ThisClumnName` = '$ThisValuee' ";
+         }else {
+         $flags .=" `$ThisClumnName` = '$ThisValuee' and ";
+         }
+   }
+
+   return $DB->query("DELETE FROM  `$TableName`   WHERE $flags ");
+   return  $sql->execute();
+}
+public function Update($TableName,$ClumnName,$Value, $flagCulmns,$Flag, $Extra='')
+{
+  $TableName = strtolower($TableName);
+  $DB = $GLOBALS['DB'];
+  $Culs='' ;$Vals='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  $Flag=mysqli_escape_string($DB,$Flag);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        $ThisValue =mysqli_escape_string($DB,$Value[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' ";
+        }else {
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' , ";
+        }
+  }
+
+  for ($i=0; $i < count($flagCulmns); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$flagCulmns[$i]);
+        if($i ==(count($flagCulmns)-1)){
+        $Vals .=" `$ThisClumnName` = '$Flag' ";
+        }else {
+        $Vals .=" `$ThisClumnName` = '$Flag' or ";
+        }
+  }
+    return $DB->query("UPDATE `$TableName` SET $Culs WHERE $Vals " . $Extra);
+    return  $sql->execute();
+}
+public function UpdateMultyConditions($TableName,$ClumnName,$Value, $flagCulmns,$Flag, $Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+  $Culs='' ;$Vals='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        $ThisValue =mysqli_escape_string($DB,$Value[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' ";
+        }else {
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' , ";
+        }
+  }
+
+  for ($i=0; $i < count($Flag); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$flagCulmns[$i]);
+        $ThisFlag =mysqli_escape_string($DB,$Flag[$i]);
+        if($i ==(count($flagCulmns)-1)){
+        $Vals .=" `$ThisClumnName` = '$ThisFlag' ";
+        }else {
+        $Vals .=" `$ThisClumnName` = '$ThisFlag' and ";
+        }
+  }
+  return $DB->query("UPDATE `$TableName` SET $Culs WHERE $Vals " . $Extra);
+    return  $sql->execute();
+}
+public function UpdateRange($TableName,$ClumnName,$Value, $flagCulmns,$Flag,$Operation, $Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+  $Culs='' ;$Vals='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+  $Flag=mysqli_escape_string($DB,$Flag);
+  for ($i=0; $i < count($ClumnName); $i++) {
+        $ThisClumnName =mysqli_escape_string($DB,$ClumnName[$i]);
+        $ThisValue =mysqli_escape_string($DB,$Value[$i]);
+        if($i ==(count($ClumnName)-1)){
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' ";
+        }else {
+        $Culs .=" `$ThisClumnName` =  '$ThisValue' , ";
+        }
+  }
+
+   $ThisClumnName =mysqli_escape_string($DB,$flagCulmns);
+   $Vals .=" `$ThisClumnName` " . $Operation ." '$Flag' ";
+   return $DB->query("UPDATE `$TableName` SET $Culs WHERE $Vals " . $Extra);
+    return  $sql->execute();
+}
+public function UpdateRangeOldValue($TableName,$ClumnName,$Value, $key,$StartValue,$Operation, $Extra='')
+{
+  $TableName = strtolower($TableName);
+    $DB = $GLOBALS['DB'];
+   $Vals='';
+  $TableName =mysqli_escape_string($DB,$TableName);
+   $Culs = "`$ClumnName` = (`$ClumnName`" . $Value ;
+    $Vals .=" `$key` " . $Operation ." $StartValue ";
+   return $DB->query("UPDATE `$TableName` SET $Culs WHERE $Vals " . $Extra);
+  return  $sql->execute();
+}
+public function Post($url,$PostDatakeys=[],$PostDataValues=[])
+{
+  $PostData=[];
+  for ($i=0; $i < count($PostDatakeys); $i++) {
+    $PostData[$PostDatakeys[$i]] = $PostDataValues[$i];
+  }
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL,$url);
+  curl_setopt($ch, CURLOPT_POST, 1);
+   curl_setopt($ch, CURLOPT_POSTFIELDS,
+           http_build_query($PostData));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $server_output = curl_exec ($ch);
+  curl_close ($ch);
+  return $server_output;
+}
+public function HttpGet($url,$PostDatakeys=[],$PostDataValues=[])
+{
+  $PostData=[];
+  for ($i=0; $i < count($PostDatakeys); $i++) {
+    $PostData[$PostDatakeys[$i]] = $PostDataValues[$i];
+  }
+  return file_get_contents($url . "?" . str_replace("%2C",",",http_build_query($PostData)));
+}
+  public function Translate($value){
+    try{
+      $this->Languge =   isset($_SESSION['lang']) ?  $_SESSION['lang'] : 'Arabic';
+          if(file_exists('./app/Translate/' . $this->Languge) ){
+              $file=file_get_contents('./app/Translate/' . $this->Languge);
+          }else {
+                  $file=file_get_contents('./app/Translate/Arabic');
+          }
+        $FirstArray =explode("#",$file);
+        $TheTrans =explode("\n",$FirstArray[1]);
+        $line = $TheTrans[$value - 1];
+        $string = trim(preg_replace('/\s\s+/', ' ', $line));
+        return $string;
+      }catch (Exception $e){
+     return "No Translation Found";
+      }
+
+  }
+  public function CheckCrossSiteRequestForgery()
+  {
+    if(!isset($_POST["att_value"]) || $this->GetCookie("Att_Token") !== $_POST["att_value"]){
+      die(json_encode(["Ok"=>0,"Message"=>$this->Translate(55)]));
+    }
+  }
+  public function CrossSiteRequestForgery()
+  {
+    $Value = $this->RandomToken(50);
+    $this->AddCookie("Att_Token",$Value);
+    ?>
+     <input type="hidden" name="att_value" value="<?php echo $Value ?>">
+    <?php
+  }
+public function RemoveAllCookies()
+    {
+      if (isset($_SERVER['HTTP_COOKIE'])) {
+            $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+            foreach($cookies as $cookie) {
+                $parts = explode('=', $cookie);
+                $name = trim($parts[0]);
+                setcookie($name, '', time()-1000);
+                setcookie($name, '', time()-1000, '/');
+            }
+        }
+    }
+    public function RandomToken($Length)
+    {
+      $Genrated_Value = "";
+      $Keys = "0123456789_azertyuiopqsdfghjklmwxcvbn-AZERTYUIOPQSDFGHJKLMWXCVBN";
+      for ($i=0; $i < $Length  ; $i++) {
+       $Genrated_Value .= $Keys[rand(0,62)];
+      }
+      return $Genrated_Value;
+    }
+    public function GoHome()
+    {
+        header("Location: " . ROOT ) ;
+    }
+    public function isJson($string) {
+     return ((is_string($string) &&
+            (is_object(json_decode($string)) ||
+            is_array(json_decode($string))))) ? true : false;
+      }
+    public function AddCookie($Cookie_Name,$Cookie_Value,$LifeTime = 30)
+    {
+      setcookie($Cookie_Name, $Cookie_Value, time() + (86400 * $LifeTime) , "/");
+    }
+    public function UpdateCookie($Cookie_Name,$Cookie_Value,$LifeTime = 30)
+    {
+     setcookie($Cookie_Name, $Cookie_Value, time() + (86400 * $LifeTime) , "/");
+    }
+    public function GetCookie($Cookie_Name)
+    {
+      if(isset($_COOKIE[$Cookie_Name])) {
+      return  $_COOKIE[$Cookie_Name];
+      }else {
+        return false;
+      }
+    }
+    public function RemoveCookie($Cookie_Name)
+    {
+      setcookie($Cookie_Name, null, -1 , "/");
+    }
+    public function GetTime($value)
+    {
+      return Date("Y-m-d",strtotime($value));
+    }
+    public function Direction()
+    {
+        if(isset($_SESSION['lang'])){
+        $this->Languge = $_SESSION['lang'];
+        }
+        if(file_exists('./app/Translate/' . $this->Languge) ){
+        $file=file_get_contents('./app/Translate/' . $this->Languge);
+        }else {
+        $file=file_get_contents('./app/Translate/Arabic');
+        }
+        $FirstArray =explode("#",$file);
+        return $FirstArray[0];
+    }
+    public function KillDir($target) {
+        if(is_dir($target)){
+            $files = glob( $target . '*', GLOB_MARK );
+            foreach( $files as $file ){
+                $this->KillDir( $file );
+            }
+            rmdir($target);
+        } elseif(is_file($target)) {
+            unlink( $target );
+        }
+    }
+  }
