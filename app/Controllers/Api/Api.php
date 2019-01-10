@@ -1,4 +1,4 @@
-<?php namespace MITDone;
+<?php namespace Controllers\Api;
 
 /**
  * MItdone LLC
@@ -10,12 +10,13 @@
  * Customer support Link https://www.mitdone.com/support/projects/1000000478145
  *
  */
-class api extends Controller
+class Api
 {
   public function v2()
   {
       $user = Authorization::Token();
       $target = func_get_args();
+
       if ($user&&$user->valid) {$user->GetIp(); $this->ParseRequest($target);return;}
       if(count($target)>=2&&$target[0]=="sheared"&&$target[1]=="files"){$this->ParseRequest($target);return;}
        $autho = isset($_REQUEST['client_secret'])?$_POST:Authorization::AuthoFail();
@@ -28,15 +29,17 @@ class api extends Controller
     Notification::NoticAllEngineers(65);die();
   }
   protected function ParseRequest($param){
-    $Req_class = $param[0];
-    $Req_method =  isset($param[1])?$param[1]:Authorization::UnsupportedRequest();
-    if(!AllowedRequests::Check($Req_class)){Authorization::UnsupportedRequest();}
-    $Server = new $Req_class;
-    if (!method_exists($Server,$Req_method)) {Authorization::UnsupportedRequest();}
-    unset($param[1]);
-    unset($param[0]);
-    $param =$param ? array_values($param): [];
-    call_user_func_array([$Server,$Req_method],$param);
+            $Req_class = $param[0];
+            $Req_method =  isset($param[1])?$param[1]:Authorization::UnsupportedRequest();
+            if(!AllowedRequests::Check($Req_class)){Authorization::UnsupportedRequest();}
+            $Server = 'Controllers\\Api\\' . $Req_class;
+            $Server = new $Server();
+
+            if (!method_exists($Server,$Req_method)) {Authorization::UnsupportedRequest();}
+            unset($param[1]);
+            unset($param[0]);
+            $param =$param ? array_values($param): [];
+            call_user_func_array([$Server,$Req_method],$param);
   }
 
 }
@@ -1028,9 +1031,9 @@ class sheared extends DBHelper
   public function files($folder = false,$fileName =false,$chat_img=false){
    if (!$folder||!$fileName) {Authorization::UnsupportedRequest();  }
    if(!$chat_img){
-      $path = Dir . 'app/storage/' . $folder . '/' . $fileName;
+       $path = STORAGE . $folder . DS . $fileName;
      }else{
-       $path = Dir .  'app/storage/' . $folder . '/' . $fileName ."/".$chat_img;
+       $path = STORAGE . $folder . DS . $fileName .DS.$chat_img;
     }
     if(file_exists($path)){
        header('Content-type: Image/jpeg');
