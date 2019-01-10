@@ -48,6 +48,7 @@ class Autoload
 
 		$this->loadFrom('config'); // load config files
 		$this->loadFrom('System' . DS . 'helpers' . DS); // load helpers functions
+		$this->loadFrom('Controllers/Api');
 
 		spl_autoload_register(function($class){ // autoload classes on call
 

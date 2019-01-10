@@ -1,7 +1,6 @@
 <?php 
 
 use MITDone\Aven\Facades\Aven as Router;
-use Controllers\Api\Api;
 
 Router::any('/panel/admin/{url}', function(){
 

@@ -12,7 +12,6 @@
  */
 use MITDone\App\Model;
 use MITDone\Http\FileUpload;
-require CONTROLLERS . 'Api' . DS . 'Api.php';
 
 class UsersModel extends Model
 {

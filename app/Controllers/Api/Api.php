@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 
 class Api
 {
@@ -18,7 +17,7 @@ class Api
     $Req_class = $param[0];
     $Req_method =  isset($param[1])?$param[1]:Authorization::UnsupportedRequest();
     if(!AllowedRequests::Check($Req_class)){Authorization::UnsupportedRequest();}
-    $Server = 'Controllers\\Api\\' . $Req_class;
+    $Server =  $Req_class;
     $Server = new $Server;
     if (!method_exists($Server,$Req_method)) {Authorization::UnsupportedRequest();}
     unset($param[1]);
@@ -28,12 +27,6 @@ class Api
   }
 
 }
-/**
- *
- */
- /**
-  *
-  */
 
 class User extends DBHelper
 {
@@ -42,6 +35,7 @@ class User extends DBHelper
   {
     if ($token) {
         $res = $this->GetRows("oauth_access_tokens",'id',$token);
+        
         if (mysqli_num_rows($res)>0) {$token = mysqli_fetch_assoc($res)['user_id'];}
         $res = $this->GetRows('users','id',$token);
         if (mysqli_num_rows($res)==0) {$this->valid = false;return;}
@@ -2111,7 +2105,7 @@ public function FetchArrayObjects($className,$res)
 {
   $data = [];
   while ($row = mysqli_fetch_assoc($res)) {
-    $object = 'Controllers\\Api\\'. $className;
+    $object ='\\'. $className;
     $data[] = new $object($row);
   
   }
