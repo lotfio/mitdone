@@ -87,11 +87,11 @@
                   
                   <div class="animated-radio-button">
                     <label>
-                      <input type="radio" name="role" value="2" <?=$data->user->role_id === 1 ?:e('checked')?>><span class="label-text">User</span>
+                      <input type="radio" name="role" value="2" <?=$data->user->role_id == 1 ?:e('checked')?>><span class="label-text">User</span>
                     </label>
                     <br>
                     <label>
-                      <input type="radio"  name="role" value="1" <?=$data->user->role_id !== 1 ?:e('checked')?>><span class="label-text">Admin</span>
+                      <input type="radio"  name="role" value="1" <?=$data->user->role_id != 1 ?:e('checked')?>><span class="label-text">Admin</span>
                     </label>
                   </div>
       
