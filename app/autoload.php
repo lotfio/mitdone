@@ -43,7 +43,7 @@ class Autoload
 	 *
 	 * @return  void
 	 */
-	public function load() : void
+	public function load()
 	{
 
 		$this->loadFrom('config'); // load config files
