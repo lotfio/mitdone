@@ -155,13 +155,13 @@ class UsersModel extends Model
                 
                             ], ["id | = "=> $id]);
             
-                            $up->uploadFile(PHP_UP_IMG); // upload image
+                            $up->uploadFile(ST_IMAGES); // upload image
 
-                            $up->delete(PHP_UP_IMG . $user->image); // delete old image
+                            $up->delete(ST_IMAGES . $user->image); // delete old image
             
-                            $resizer = imageResizer(PHP_UP_IMG . $image); // resize image
+                            $resizer = imageResizer(ST_IMAGES . $image); // resize image
                             $resizer->resizeToBestFit(300, 300);
-                            $resizer->save(PHP_UP_IMG . $image);
+                            $resizer->save(ST_IMAGES . $image);
 
                             return 1;
                         }

@@ -57,8 +57,9 @@ define('JS',     ASSETS   . 'js'       . DS);
 define('img',    ASSETS   . 'img'      . DS);
 
 define('UPLOADS',  URL      . BASE_URI . 'uploads'. DS);
-define('UP_FILES', UPLOADS  . 'files' . DS);
-define('UP_IMG',   UPLOADS  . 'img'   . DS);
+define('UP_FILES', UPLOADS  . 'files'  . DS);
+
+define('UP_IMG',   URL   . ltrim(BASE_URI, '/')   . 'panel/admin/?url=api/v2/sheared/files/images/'); //from storage
 
 // security
 define('CSRF', "__CSRF");

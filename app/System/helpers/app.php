@@ -208,7 +208,7 @@ if(!function_exists('image'))
 {
     function image($userImage, $defaultImage = "default-avatar.jpg")
     {
-        if($userImage == '' || (!file_exists(PHP_UP_IMG . $userImage))) return UP_IMG . $defaultImage;
+        if($userImage == '' || (!file_exists(ST_IMAGES . $userImage))) return UP_IMG . $defaultImage;
 
 
         return UP_IMG . $userImage;
