@@ -5,7 +5,7 @@ $(function(){
 
         e.preventDefault();
 
-        var id = $(this).data('id');
+        var uri = $(this).data('uri');
         var place = $(this).data('place');
         let btn = $(this);
 
@@ -25,7 +25,7 @@ $(function(){
                 if(isConfirm)
                 {
                     $.ajax({
-                    url: base_uri +'admin/users/delete/' + id,
+                    url:  uri,
                     method: 'DELETE',
                     success: function(result) {
                             

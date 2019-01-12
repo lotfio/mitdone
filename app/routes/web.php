@@ -32,7 +32,7 @@ Router::get('/admin/logout', "Admin\\LogOutController@logout");
 Router::get('/admin/profile', "Admin\\ProfileController@index");
 
 Router::get('/admin/users', "Admin\\UsersController@index");
-Router::get('/admin/users/{id}', "Admin\\UsersController@index")->filter(["id"=>"/[0-9]+/"]);
+Router::get('/admin/users/{page}', "Admin\\UsersController@index")->filter(["page"=>"/[0-9]+/"]);
 
 // users
 Router::get('/admin/users/show/{id}', "Admin\\UsersController@show")->filter(["id"=>"/[0-9]+/"]);
@@ -47,3 +47,10 @@ Router::post('/admin/users/message/{id}', "Admin\\UsersController@message")->fil
 
 
 // orders
+Router::get('/admin/orders/', "Admin\\OrdersController@index");
+Router::get('/admin/orders/{page}', "Admin\\OrdersController@index")->filter(["page"=>"/[0-9]+/"]);
+
+Router::delete('/admin/orders/delete/{id}', "Admin\\OrdersController@delete")->filter(["id"=>"/[0-9]+/"]);
+
+Router::get('/admin/orders/show/{id}', "Admin\\OrdersController@show")->filter(["id"=>"/[0-9]+/"]);
+Router::get('/admin/orders/edit/{id}', "Admin\\OrdersController@edit")->filter(["id"=>"/[0-9]+/"]);

@@ -131,8 +131,18 @@ use PDO;
                 $binds = array_combine($nph, $val);
             }
         }
+
         $stmt = $this->con->prepare($sql);
         $stmt->execute($binds);
+        return $stmt->rowCount() > 0 ? $stmt->fetchAll() : 0;
+    }
+
+
+    public function custom($sel, $table, $where)
+    {
+        $sql  = "SELECT $sel FROM $table $where";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
         return $stmt->rowCount() > 0 ? $stmt->fetchAll() : 0;
     }
 

@@ -161,3 +161,22 @@ table .btn-sm{
 .pagination{
     justify-content: flex-end;
 }
+.btn-warning, .btn-warning:hover{
+    color:  #fff;
+}
+
+.completed{
+    background: #8bc34a;
+    color: #fff;
+}
+.waiting{ 
+    background:  #9e9e9e;
+    color: #fff;
+}
+.processing{
+    background: #ffeb3b;
+    color: #fff;
+}
+.table th, .table td{
+    padding: 0.5rem;
+}
