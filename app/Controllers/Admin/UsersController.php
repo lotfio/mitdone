@@ -12,11 +12,12 @@
  */
 
 use MITDone\App\Controller;
-use Models\{UsersModel};
+use Models\{UsersModel, OrdersModel};
 
 class UsersController extends Controller
 {
     private $users;
+    private $orders;
 
     /**
      * controller auth check
@@ -25,7 +26,8 @@ class UsersController extends Controller
     {
         auth()->notLogged('admin/login'); // check login 
 
-        $this->users  = new UsersModel;
+        $this->users   = new UsersModel;
+        $this->orders  = new OrdersModel;
     }
 
     /**
@@ -51,8 +53,9 @@ class UsersController extends Controller
     {
         $id = (int) $id ?? 0;
 
-        $data['title'] = "Show User";
-        $data['user']  = $this->users->getById($id)[0];
+        $data['title']  = "Show User";
+        $data['user']   = $this->users->getById($id)[0];
+        $data['orders'] = $this->orders->userOrders($id);
 
         return view('admin/users.show', $data);
     }

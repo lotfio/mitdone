@@ -62,8 +62,61 @@
                       
                         </div>
                     </div>
-
                 </div>
+            <hr>
+            <?php if(is_array($data->orders)):?>
+            <div class="tile">
+            <div class="tile-body">
+           
+              <table class="table table-hover table-bordered" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th>Number</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Note</th>
+                    <th>City</th>
+                    <th>Street</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                 <?php foreach($data->orders as $order):?>
+                 <tr>
+                    <td><?=$order->id?></td>
+                    <td><?=$order->price?></td>
+                    <td><?=$order->description_problem?></td>
+                    <td><?=$order->location_address?></td>
+                    <td><?=$order->status?></td>
+                    <td><?=$order->note?></td>
+                    <td><?=$order->name?></td>
+                    <td><?=$order->street?></td>
+                    <td>
+                      <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Show"><i class="fa fa-eye fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/notify/<?=e($user->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-bell fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/message/<?=e($user->id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-envelope fa-fw"></i></a>
+                      <a data-id="<?=e($user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash fa-fw"></i></a>
+                    </td>
+                  </tr>
+                 <?php endforeach?>
+                 <?php else:?>
+                    <div class="bs-component">
+                      <div class="alert alert-dismissible alert-danger">
+                          <button class="close" type="button" data-dismiss="alert">×</button>
+                          <strong>Oh snap!</strong>No Orders Where Found ! 
+                      </div>
+                    </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <?php endif?>
+
+
               </div>
             </div>
 
@@ -73,8 +126,6 @@
                 <button class="close" type="button" data-dismiss="alert">×</button><strong>Ouch !</strong>
                 No User Were Found !
               </div>
-
-
             <?php endif?>
               
              

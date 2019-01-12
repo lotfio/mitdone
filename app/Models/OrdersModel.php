@@ -34,4 +34,18 @@ class OrdersModel extends Model
     {
         return $this->select->countLast7daysRows('ordersrequests');
     }
+
+    /**
+     * getting user orders
+     *
+     * @param  int $id
+     * @return void
+     */
+    public function userOrders($id)
+    {
+        $sql  = "SELECT * FROM ordersrequests INNER JOIN towns ON ordersrequests.town = towns.id
+        INNER JOIN cities ON ordersrequests.city = cities.id WHERE ordersrequests.user_id=?";
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute([$id]) ? $stmt->fetchAll() : 0;
+    }
 }

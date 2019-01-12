@@ -12,6 +12,7 @@
  */
 use MITDone\Database\Select;
 use MITDone\Database\Update;
+use MITDone\Database\Connection;
 use PDO;
 
 class Model
@@ -20,5 +21,6 @@ class Model
     {
         $this->select = new Select;
         $this->update = new Update;
+        $this->con    = Connection::init();
     }
 }

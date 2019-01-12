@@ -102,8 +102,9 @@ a,p,h1,h2,h3,h4,h5,h6{
 .timeline-post{
     position: relative;
 }
-.timeline-post .content{
-    margin-top: 20px;
+.post-media{
+    display: flex;
+    justify-content: space-around;
 }
 .img-modify{
     position: absolute;
