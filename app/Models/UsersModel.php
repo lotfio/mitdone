@@ -21,9 +21,25 @@ class UsersModel extends Model
      * 
      * @return object
      */
-    public function all()
+    public function all($page)
     {   
-        return $this->select->from('users', '*', ["deleted | = " => "0"]);
+        $current = isset($page) ? (int) $page : 1;
+        $perpage = 10;
+        $next = $current + 1;
+        $prev = $current - 1;
+        $pages = (int) ceil($this->countAllUsers() / $perpage);
+        $start = ($current > 1) ? ($current * $perpage) - $perpage : 0;
+
+        $data['pagination'] = [
+            "current" => $current,
+            "prev"    => $prev,
+            "next"    => $next,
+            "total"   => $pages
+        ];
+
+        $data['users'] = $this->select->from('users', '*', ["deleted | = " => "0"], "LIMIT {$start},{$perpage}");
+
+        return $data;
     }
 
     /**

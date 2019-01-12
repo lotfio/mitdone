@@ -102,7 +102,7 @@ a,p,h1,h2,h3,h4,h5,h6{
 .timeline-post{
     position: relative;
 }
-.post-media{
+.post-media-show{
     display: flex;
     justify-content: space-around;
 }
@@ -153,4 +153,11 @@ table .btn-sm{
 }
 .clear-fix{
     clear:both;
+}
+.table-bordered th:last-child{
+    width: 256px;
+}
+
+.pagination{
+    justify-content: flex-end;
 }

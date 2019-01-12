@@ -35,10 +35,10 @@ class UsersController extends Controller
      *
      * @return void
      */
-    public function index()
+    public function index($page = 1)
     {
         $data['title']    = tr(25);
-        $data['allUsers'] = $this->users->all();
+        $data['allUsers'] = $this->users->all($page);
 
         return view('admin/users', $data);
     }

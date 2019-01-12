@@ -46,7 +46,7 @@
            
             <div class="timeline-post"> <!-- Time line post -->
                 <div class="col-md-4">
-                <div class="post-media"><a href="#"><img src="<?=image($data->user->image, 'default-avatar.png')?>"></a>
+                <div class="post-media post-media-show"><a href="#"><img src="<?=image($data->user->image, 'default-avatar.png')?>"></a>
 
                   <div class="content"> <!-- INFORMATION -->
                     <h5><a href="#"><?=$data->user->name?></a></h5>
@@ -64,7 +64,8 @@
                     </div>
                 </div>
             <hr>
-            <?php if(is_array($data->orders)):?>
+
+            <?php if(is_array($data->orders) && !empty($data->orders)):?>
             <div class="tile">
             <div class="tile-body">
            
@@ -95,14 +96,15 @@
                     <td><?=$order->name?></td>
                     <td><?=$order->street?></td>
                     <td>
-                      <a href="<?=BASE_URI?>admin/users/show/<?=e($user->id)?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Show"><i class="fa fa-eye fa-fw"></i></a>
-                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($user->id)?>" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit fa-fw"></i></a>
-                      <a href="<?=BASE_URI?>admin/users/notify/<?=e($user->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-bell fa-fw"></i></a>
-                      <a href="<?=BASE_URI?>admin/users/message/<?=e($user->id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-envelope fa-fw"></i></a>
-                      <a data-id="<?=e($user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/show/<?=e($order->id)?>" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Show"><i class="fa fa-eye fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/edit/<?=e($order->id)?>" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit"><i class="fa fa-edit fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/notify/<?=e($order->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-bell fa-fw"></i></a>
+                      <a href="<?=BASE_URI?>admin/users/message/<?=e($order->user_id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-envelope fa-fw"></i></a>
+                      <a data-id="<?=e($order->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                  <?php endforeach?>
+
                  <?php else:?>
                     <div class="bs-component">
                       <div class="alert alert-dismissible alert-danger">

@@ -22,6 +22,8 @@
         <div class="col-md-12">
           <div class="tile">
             <div class="tile-body">
+
+              <?php if(is_array($data->allUsers['users'])):?>
               <table class="table table-hover table-bordered" id="sampleTable">
                 <thead>
                   <tr>
@@ -35,10 +37,7 @@
                 </thead>
                 <tbody>
 
-
-                 <?php if(is_array($data->allUsers)):?>
-
-                 <?php foreach($data->allUsers as $user):?>
+                 <?php foreach($data->allUsers['users'] as $user):?>
                  <tr>
                     <td><?=$user->id?></td>
                     <td><?=$user->name?></td>
@@ -54,7 +53,44 @@
                     </td>
                   </tr>
                  <?php endforeach?>
-                 <?php else:?>
+                </tbody>
+              </table>
+
+<?php $page = (object) ($data->allUsers['pagination'])?>
+              <ul class="pagination"> <!-- pagination -->
+
+                   <?php if($page->prev > 1):?>
+                      <li class="page-item"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->prev?>">«</a></li>
+                  <?php else:?>
+                      <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
+                  <?php endif?>
+
+               
+
+                <?php if($page->prev >= 1):?>
+                    <li class="page-item"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->prev?>"><?=$page->prev?></a></li>
+                <?php endif?>
+
+                  <li class="page-item active"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->current?>"><?=$page->current?></a></li>
+
+
+                <?php if($page->next < $page->total):?>
+                    <li class="page-item"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->next?>"><?=$page->next?></a></li>
+                <?php endif?>
+
+                <?php if($page->next + 10 < $page->total):?>
+                    <li class="page-item"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->next + 10?>"><?=$page->next + 10?></a></li>
+                <?php endif?>
+                  
+
+                <?php if($page->next < $page->total):?>
+                  <li class="page-item"><a class="page-link" href="<?=BASE_URI?>admin/users/<?=$page->next?>">»</a></li>
+                <?php else:?>
+                  <li class="page-item disabled"><a class="page-link" href="#">»</a></li>
+                <?php endif?>
+              </ul><!-- end pagination -->
+
+     <?php else:?>
                     <div class="bs-component">
                       <div class="alert alert-dismissible alert-danger">
                           <button class="close" type="button" data-dismiss="alert">×</button>
@@ -62,8 +98,6 @@
                       </div>
                     </div>
                 <?php endif?>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -76,6 +110,6 @@
 <script type="text/javascript" src="<?=JS?>plugins/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?=JS?>plugins/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="<?=JS?>plugins/sweetalert.min.js"></script>
-<script type="text/javascript">$('#sampleTable').DataTable();</script>
+<script type="text/javascript"></script>
 <?= singleView('tmp/footer')?>
 

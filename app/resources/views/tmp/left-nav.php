@@ -12,10 +12,12 @@
     
     <li><a class="app-menu__item <?=activeTab('users')?>" href="<?=BASE_URI . 'admin/users'?>"><i class="app-menu__icon fa fa-users"></i><span class="app-menu__label"><?=tr(24)?></span></a></li>
     
+    <li><a class="app-menu__item <?=activeTab('orders')?>" href="<?=BASE_URI . 'admin/orders'?>"><i class="app-menu__icon fa fa-gift"></i><span class="app-menu__label">Orders</span></a></li>
+    
 
     
     <li class="treeview">
-        <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">UI Elements</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+        <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-laptop"></i><span class="app-menu__label">ADD</span><i class="treeview-indicator fa fa-angle-right"></i></a>
         <ul class="treeview-menu">
         <li><a class="treeview-item" href="bootstrap-components.html"><i class="icon fa fa-circle-o"></i> Bootstrap Elements</a></li>
         <li><a class="treeview-item" href="https://fontawesome.com/v4.7.0/icons/" target="_blank" rel="noopener"><i class="icon fa fa-circle-o"></i> Font Icons</a></li>
