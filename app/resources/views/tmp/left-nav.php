@@ -12,6 +12,8 @@
     
     <li><a class="app-menu__item <?=activeTab('users')?>" href="<?=BASE_URI . 'admin/users'?>"><i class="app-menu__icon fa fa-users"></i><span class="app-menu__label"><?=tr(24)?></span></a></li>
     
+    <li><a class="app-menu__item <?=activeTab('Engineers')?>" href="<?=BASE_URI . 'admin/engineers'?>"><i class="app-menu__icon fa fa-male"></i><span class="app-menu__label">Engineers</span></a></li>
+
     <li><a class="app-menu__item <?=activeTab('orders')?>" href="<?=BASE_URI . 'admin/orders'?>"><i class="app-menu__icon fa fa-gift"></i><span class="app-menu__label">Orders</span></a></li>
     
 

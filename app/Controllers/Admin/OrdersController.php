@@ -69,9 +69,11 @@ class OrdersController extends Controller
     public function show($id = 0)
     {
         $id = (int) $id ?? 0;
-        $data['title'] = "Edir Order";
+        $data['title'] = "Edit Order";
 
-        return view('admin/orders.show');
+        $data['order'] = $this->orders->getById($id)[0];
+
+        return view('admin/orders.show', $data);
     }
 
     /**
@@ -87,6 +89,5 @@ class OrdersController extends Controller
 
         return view('admin/orders.edit');
     }
-
 
 }

@@ -1,8 +1,7 @@
 <?= singleView('tmp/header', $data)?>
 <?= singleView('tmp/top-nav', $data)?>
 <?= singleView('tmp/left-nav', $data);
-$admin = auth()->user(); // auth admin
-?>
+$admin = auth()->user(); // auth admin ?>
 
 
 <main class="app-content">

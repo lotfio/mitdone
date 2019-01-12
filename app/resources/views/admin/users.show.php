@@ -40,7 +40,7 @@
                     <a class="btn btn-primary btn" href="<?=BASE_URI.'admin/users/edit/'.$data->user->id?>"><i class="fa fa-lg fa-edit"></i></a>
                     <a href="<?=BASE_URI?>admin/users/notify/<?=e($data->user->id)?>" class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Notify"><i class="fa fa-lg fa-bell fa-fw"></i></a>
                     <a href="<?=BASE_URI?>admin/users/message/<?=e($data->user->id)?>" class="btn btn-secondary btn-sm" data-toggle="tooltip" data-placement="top" title="" data-original-title="Message"><i class="fa fa-lg fa-envelope fa-fw"></i></a>
-                    <a data-id="<?=e($data->user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-lg fa-trash fa-fw"></i></a>
+                    <a data-uri="<?=BASE_URI?>admin/users/delete/<?=e($data->user->id)?>" class="btn btn-danger btn-sm btn-delete" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-lg fa-trash fa-fw"></i></a>
                 </div>
             </div>
            
